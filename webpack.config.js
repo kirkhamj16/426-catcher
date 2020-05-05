@@ -10,7 +10,7 @@ module.exports = {
         filename: '[name].[hash].js',
         publicPath: `/${pkg.repository}/`,
     },
-    target: 'web',
+    target: 'node',
     devtool: 'source-map',
     module: {
         rules: [
