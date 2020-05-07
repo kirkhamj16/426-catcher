@@ -252,8 +252,10 @@ function populate(n) {
       
         if(t===1){
             var random = Math.random();
-            var blue = new THREE.MeshLambertMaterial({color: 0x0000FF});
-            var red = new THREE.MeshLambertMaterial({color: 0xFF0000});
+            var blue = new THREE.MeshBasicMaterial({color: 0x0000FF});
+            blue.color = new THREE.Color(0x0000FF);
+            var red = new THREE.MeshBasicMaterial({color: 0xFF0000});
+            red.color = new THREE.Color(0xFF0000);
             if (random < 0.5) var mat = blue;
             else var mat = red;
 
@@ -393,6 +395,9 @@ function updatePlayerPos() {
 
 }
 
+var winning_points = 0;
+var losing_points = 0;
+
 
 //----------------------------------
 //  COLLISIONS
@@ -428,6 +433,8 @@ function handleCollisions() {
             let caught = sphereCaught(playerBody, playerMesh, body, mesh);
             if (caught) {
                 console.log(bodys.length);
+                if(meshs[i].material.color.r == 1) losing_points++;
+                if(meshs[i].material.color.b == 1) winning_points++;
                 bodys.splice(i, 1);
                 scene.remove(meshs[i]);
                 mesh.geometry.dispose();
@@ -439,6 +446,7 @@ function handleCollisions() {
                 objNum--;
 
                 console.log(bodys.length);
+                console.log(winning_points - losing_points);
             }
         }
         else if (body.type == SHAPE_BOX) {
