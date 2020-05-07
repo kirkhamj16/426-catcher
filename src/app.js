@@ -9,6 +9,7 @@
 import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SeedScene } from 'scenes';
+import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 
 const OIMO = require('oimo');
 const THREE = require('three')
@@ -36,8 +37,6 @@ var type = 1;
 var infos;
 
 
-
-
 // Set up renderer, canvas, and minor CSS adjustments
 renderer.setPixelRatio(window.devicePixelRatio);
 const canvas = renderer.domElement;
@@ -60,7 +59,9 @@ controls.update();
 //-----------------------------------------------------------------------
 var geos = {};
 var mats = {};
-
+var types, sizes, positions, bucketGeometry;
+var geoBox = new THREE.BoxGeometry(1,1,1);
+var geoCyl = new THREE.CylinderGeometry( 0.5, 0.5, 1, 6, 1 );
 var materialType = 'MeshBasicMaterial';
 
 
@@ -157,7 +158,7 @@ function initOimoPhysics(){
     random: true,  // randomize sample
     info: false,   // calculate statistic or not
     gravity: [0,-9.8,0] });
-    
+    initbucketGeometry();
     let x, y, z, w, h, d;
 
     //---------------------------------------------
@@ -167,19 +168,37 @@ function initOimoPhysics(){
     y = 100
    	z = 100
     w = 20
-    h = 10
+    h = 20
 
-    let player_body = world.add({type:'cylinder', size:[w*0.5,h], pos:[0,10,0], move:true, world:world});
-	let player_mesh = new THREE.Mesh( geos.cylinder, mats.cyl );
-	player_mesh.scale.set( w*0.5, h, w*0.5 );
+    /*let player_body = world.add({type:'cylinder', size:[w*0.5,h], pos:[0,100,0], move:true, world:world});
+	let player_mesh = new THREE.Mesh(geos.cylinder, mats.sph);
+	player_mesh.position.set(0, 100, 0);
+	player_mesh.scale.set( w * 0.5, h, w * 0.5 ); */
+
+    let player_body = world.add({
+    type:types,
+    size:sizes,
+    pos:[x,y,z],
+    posShape:positions,
+    move:true, 
+    world:world, 
+    name:'box1', 
+    config:[0.2, 0.4,0.1],
+    restitution:.01
+	});
+
+	//bodys[i] = b.body;
+	let player_mesh = new THREE.Mesh( bucketGeometry, mats['cyl'] );
+
+	//meshs[i].castShadow = true;
+	//meshs[i].receiveShadow = true;
 
 
-
-	player_mesh.castShadow = true;
-	player_mesh.receiveShadow = true;
+	//player_mesh.castShadow = true;
+	//player_mesh.receiveShadow = true;
 	meshs[0] = player_mesh;
 	bodys[0] = player_body;
-
+	// 
 	scene.add( player_mesh );
     //setInterval(updateOimoPhysics, 1000/60);
 
@@ -227,7 +246,7 @@ function populate(n) {
         d = 10 + Math.random()*10;
 
         if(t===1){
-            bodys[i] = world.add({type:'sphere', size:[w*0.5], pos:[x,y,z], move:true, world:world});
+            bodys[i] = world.add({type:'sphere', size:[w*0.5], pos:[x,y,z], move:true, world:world, restitution:.01});
             meshs[i] = new THREE.Mesh( geos.sphere, mats.sph );
             meshs[i].scale.set( w*0.5, w*0.5, w*0.5 );
         } else if(t===2){
@@ -260,6 +279,25 @@ function addStaticBox(size, position, rotation) {
     grounds.push(mesh);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
+}
+
+function initbucketGeometry() {
+	let w = 50
+	let h = 40
+    types = [ 'box', 'box', 'box', 'box', 'box'];
+    sizes = [ w,5,w,  4,h,w,  w,h,4,  4,h,w,  w,h,4];
+    positions = [ 0,0,0,  w/2,10,0,  0,10,w/2,   -1*(w/2),10,0,    0,10,-1*(w/2)];
+
+    var g = new THREE.Geometry();
+    var mesh, n, m;
+    for(var i=0; i<types.length; i++){
+        n = i*3;
+        m = new THREE.Matrix4().makeTranslation( positions[n+0], positions[n+1], positions[n+2] );
+        m.scale(new THREE.Vector3(sizes[n+0], sizes[n+1], sizes[n+2]));
+        g.merge(geoBox,m);
+    }
+    bucketGeometry = new THREE.BufferGeometry();
+    bucketGeometry.fromGeometry( g );
 }
 
 function clearMesh(){
