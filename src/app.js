@@ -115,26 +115,26 @@ var movingLeft = false;
 var movingDown = false;
 var movingRight = false;
 const keyDownHandler = (e) => {
-	if (e.code == "KeyW") {
-		movingUp = true;
-	} else if (e.code == "KeyS") {
-		movingDown = true;
-	} else if (e.code == "KeyA") {
-		movingLeft = true;
-	} else if (e.code == "KeyD") {
-		movingRight = true;
-	}
+    if (e.code == "KeyW") {
+        movingUp = true;
+    } else if (e.code == "KeyS") {
+        movingDown = true;
+    } else if (e.code == "KeyA") {
+        movingLeft = true;
+    } else if (e.code == "KeyD") {
+        movingRight = true;
+    }
 }
 const keyUpHandler = (e) => {
-	if (e.code == "KeyW") {
-		movingUp = false;
-	} else if (e.code == "KeyS") {
-		movingDown = false;
-	} else if (e.code == "KeyA") {
-		movingLeft = false;
-	} else if (e.code == "KeyD") {
-		movingRight = false;
-	}
+    if (e.code == "KeyW") {
+        movingUp = false;
+    } else if (e.code == "KeyS") {
+        movingDown = false;
+    } else if (e.code == "KeyA") {
+        movingLeft = false;
+    } else if (e.code == "KeyD") {
+        movingRight = false;
+    }
 }
 windowResizeHandler();
 window.addEventListener('resize', windowResizeHandler, false);
@@ -168,14 +168,14 @@ function initOimoPhysics(){
 
     x = 100
     y = 100
-   	z = 100
+    z = 100
     w = 20
     h = 20
 
     /*let player_body = world.add({type:'cylinder', size:[w*0.5,h], pos:[0,100,0], move:true, world:world});
-	let player_mesh = new THREE.Mesh(geos.cylinder, mats.sph);
-	player_mesh.position.set(0, 100, 0);
-	player_mesh.scale.set( w * 0.5, h, w * 0.5 ); */
+    let player_mesh = new THREE.Mesh(geos.cylinder, mats.sph);
+    player_mesh.position.set(0, 100, 0);
+    player_mesh.scale.set( w * 0.5, h, w * 0.5 ); */
 
     let player_body = world.add({
     type:types,
@@ -186,22 +186,22 @@ function initOimoPhysics(){
     world:world, 
     name:'box1', 
     config:[0.2, 0.4,0.1],
-    restitution:.01
-	});
+    restitution:.01,
+    });
 
-	//bodys[i] = b.body;
-	let player_mesh = new THREE.Mesh( bucketGeometry, mats['cyl'] );
+    //bodys[i] = b.body;
+    let player_mesh = new THREE.Mesh( bucketGeometry, mats['cyl'] );
 
-	//meshs[i].castShadow = true;
-	//meshs[i].receiveShadow = true;
+    //meshs[i].castShadow = true;
+    //meshs[i].receiveShadow = true;
 
 
-	//player_mesh.castShadow = true;
-	//player_mesh.receiveShadow = true;
-	meshs[0] = player_mesh;
-	bodys[0] = player_body;
-	// 
-	scene.add( player_mesh );
+    //player_mesh.castShadow = true;
+    //player_mesh.receiveShadow = true;
+    meshs[0] = player_mesh;
+    bodys[0] = player_body;
+    // 
+    scene.add( player_mesh );
     //setInterval(updateOimoPhysics, 1000/60);
 
 
@@ -238,7 +238,7 @@ function populate(n) {
     let i = 0
 
     while (i++ < max){
-    	var t;
+        var t;
         if(type===4) t = Math.floor(Math.random()*3)+1;
         else t = type;
         x = -100 + Math.random()*200;
@@ -251,8 +251,14 @@ function populate(n) {
 
       
         if(t===1){
+            var random = Math.random();
+            var blue = new THREE.MeshLambertMaterial({color: 0x0000FF});
+            var red = new THREE.MeshLambertMaterial({color: 0xFF0000});
+            if (random < 0.5) var mat = blue;
+            else var mat = red;
+
             bodys[i] = world.add({type:'sphere', size:[w*0.5], pos:[x,y,z], move:true, world:world, restitution:.01});
-            meshs[i] = new THREE.Mesh( geos.sphere, mats.sph );
+            meshs[i] = new THREE.Mesh( geos.sphere, mat);
             meshs[i].scale.set( w*0.5, w*0.5, w*0.5 );
         } else if(t===2){
             bodys[i] = world.add({type:'box', size:[w,h,d], pos:[x,y,z], move:true, world:world});
@@ -287,8 +293,8 @@ function addStaticBox(size, position, rotation) {
 }
 
 function initbucketGeometry() {
-	let w = 50
-	let h = 40
+    let w = 50
+    let h = 40
     types = [ 'box', 'box', 'box', 'box', 'box'];
     sizes = [ w,5,w,  4,h,w,  w,h,4,  4,h,w,  w,h,4];
     positions = [ 0,0,0,  w/2,10,0,  0,10,w/2,   -1*(w/2),10,0,    0,10,-1*(w/2)];
@@ -360,29 +366,29 @@ function gravity(g){
 }
 
 function updatePlayerPos() {
-	let player_mesh = meshs[0];
-	let player_body = bodys[0];
-	let speed_scale = 1;
-	if (movingUp) {
-		player_body.linearVelocity.add(new OIMO.Vec3(0, 0, -1 * speed_scale))
-	}
-	if (movingLeft) {
-		player_body.linearVelocity.add(new OIMO.Vec3(-1 * speed_scale, 0, 0));
-	}
-	if (movingRight) {
-		player_body.linearVelocity.add(new OIMO.Vec3(speed_scale, 0, 0));
-	}
-	if (movingDown) {
-		player_body.linearVelocity.add(new OIMO.Vec3(0, 0, speed_scale));
-	}
-	if (!(movingUp || movingDown || movingLeft || movingRight)) {
-		player_body.linearVelocity.scaleEqual(0.95)
-	}
-	if (player_body.position.y != 5.0) {
-		player_body.position.y = 5;
-	}
-	player_body.angularVelocity = new OIMO.Vec3(0, 0, 0)
-	player_mesh.position.copy(player_body.getPosition());
+    let player_mesh = meshs[0];
+    let player_body = bodys[0];
+    let speed_scale = 1;
+    if (movingUp) {
+        player_body.linearVelocity.add(new OIMO.Vec3(0, 0, -1 * speed_scale))
+    }
+    if (movingLeft) {
+        player_body.linearVelocity.add(new OIMO.Vec3(-1 * speed_scale, 0, 0));
+    }
+    if (movingRight) {
+        player_body.linearVelocity.add(new OIMO.Vec3(speed_scale, 0, 0));
+    }
+    if (movingDown) {
+        player_body.linearVelocity.add(new OIMO.Vec3(0, 0, speed_scale));
+    }
+    if (!(movingUp || movingDown || movingLeft || movingRight)) {
+        player_body.linearVelocity.scaleEqual(0.95)
+    }
+    if (player_body.position.y != 5.0) {
+        player_body.position.y = 5;
+    }
+    player_body.angularVelocity = new OIMO.Vec3(0, 0, 0)
+    player_mesh.position.copy(player_body.getPosition());
     player_mesh.quaternion.copy(player_body.getQuaternion());
 
 }
