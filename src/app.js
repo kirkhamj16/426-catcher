@@ -69,6 +69,7 @@ var materialType = 'MeshBasicMaterial';
 geos['sphere'] = new THREE.BufferGeometry().fromGeometry( new THREE.SphereGeometry(1,16,10));
 geos['box'] = new THREE.BufferGeometry().fromGeometry( new THREE.BoxGeometry(1,1,1));
 geos['cylinder'] = new THREE.BufferGeometry().fromGeometry(new THREE.CylinderGeometry(1,1,1));
+bucketGeometry = new THREE.BufferGeometry();
 
 // materials
 mats['sph']    = new THREE[materialType]( {shininess: 10, map: basicTexture(0), name:'sph' } );
@@ -93,6 +94,7 @@ initOimoPhysics();
 const onAnimationFrameHandler = (timeStamp) => {
     controls.update();
     updateOimoPhysics();
+    handleCollisions();
     renderer.render(scene, camera);
     scene.update && scene.update(timeStamp);
     window.requestAnimationFrame(onAnimationFrameHandler);
@@ -212,12 +214,13 @@ function initOimoPhysics(){
     addStaticBox([40, 40, 390], [180,20,0], [0,0,0]);
     addStaticBox([400, 80, 400], [0,-40,0], [0,0,0]);
     populate(1)
+
 }
 
 
 function populate(n) {
     var type;
-    var max = 100
+    var max = 100;
     if(n===1) type = 1
     else if(n===2) type = 2;
     else if(n===3) type = 3;
@@ -241,10 +244,12 @@ function populate(n) {
         x = -100 + Math.random()*200;
         z = -100 + Math.random()*200;
         y = 100 + Math.random()*1000;
+
         w = 10 + Math.random()*10;
         h = 10 + Math.random()*10;
         d = 10 + Math.random()*10;
 
+      
         if(t===1){
             bodys[i] = world.add({type:'sphere', size:[w*0.5], pos:[x,y,z], move:true, world:world, restitution:.01});
             meshs[i] = new THREE.Mesh( geos.sphere, mats.sph );
@@ -295,6 +300,7 @@ function initbucketGeometry() {
         m = new THREE.Matrix4().makeTranslation( positions[n+0], positions[n+1], positions[n+2] );
         m.scale(new THREE.Vector3(sizes[n+0], sizes[n+1], sizes[n+2]));
         g.merge(geoBox,m);
+        g.computeBoundingBox();
     }
     bucketGeometry = new THREE.BufferGeometry();
     bucketGeometry.fromGeometry( g );
@@ -345,6 +351,7 @@ function updateOimoPhysics() {
             //if(mesh.material.name === 'cyl') mesh.material = mats.scyl;
         }
     }
+
 }
 
 function gravity(g){
@@ -379,6 +386,106 @@ function updatePlayerPos() {
     player_mesh.quaternion.copy(player_body.getQuaternion());
 
 }
+
+
+//----------------------------------
+//  COLLISIONS
+//----------------------------------
+// check();
+
+// function check() {
+//     let playerBody = bodys[0];
+//     let playerMesh = meshs[0];
+//     console.log(playerBody.)
+// }
+
+function handleCollisions() {
+    // Shape type
+    var SHAPE_NULL = 0;
+    var SHAPE_SPHERE = 1;
+    var SHAPE_BOX = 2;
+    var SHAPE_CYLINDER = 3;
+    var SHAPE_PLANE = 4;
+    var SHAPE_PARTICLE = 5;
+    var SHAPE_TETRA = 6;
+
+
+    let objNum = bodys.length;
+
+    let playerBody = bodys[0];
+    let playerMesh = meshs[0];
+    // start from 1 bc 0 is the player object
+    for (let i = 1; i < objNum; i++) {
+        let body = bodys[i];
+        let mesh = meshs[i];
+        if (body.type == SHAPE_SPHERE) {
+            let caught = sphereCaught(playerBody, playerMesh, body, mesh);
+            if (caught) {
+                console.log(bodys.length);
+                bodys.splice(i, 1);
+                scene.remove(meshs[i]);
+                mesh.geometry.dispose();
+                mesh.material.dispose();
+                mesh = undefined;
+                body = undefined;
+                meshs.splice(i, 1);
+                i--;
+                objNum--;
+
+                console.log(bodys.length);
+            }
+        }
+        else if (body.type == SHAPE_BOX) {
+            boxCollisions(playerBody, playerMesh, body, mesh);
+        }
+        else if (body.type == SHAPE_CYLINDER) {
+            cylinderCollisions(playerBody, playerMesh, body, mesh);
+        }
+
+    }
+}
+
+function sphereCaught(playerBody, playerMesh, body, mesh) {
+    let r = body.shapes.radius;
+
+    let playerCenter = playerBody.position;
+
+    let vec = new THREE.Vector3().subVectors(playerCenter, body.pos);
+
+    let centerToSphereSurface = vec.clone().normalize().multiplyScalar(r);
+    let closestSpherePoint = body.position.clone().add(centerToSphereSurface);
+    // let closestSpherePoint = body.position;
+    let minX = playerBody.position.x - playerBody.shapes.halfWidth;
+    let maxX = playerBody.position.x + playerBody.shapes.halfWidth;
+    let minY = playerBody.position.y - playerBody.shapes.halfWidth;
+    let maxY = playerBody.position.y + playerBody.shapes.halfWidth;
+    let minZ = playerBody.position.z - playerBody.shapes.halfHeight;
+    let maxZ = playerBody.position.z + playerBody.shapes.halfHeight;
+
+    // console.log(minX, maxX, " and ", minY, maxY, " and ", minZ, maxZ);
+    // console.log(body.position.x, body.position.y, body.position.z)
+
+    let inside = false;
+    // let's say sphere is "caught" if 1/3 of the sphere is inside the player
+    if (closestSpherePoint.x > minX && closestSpherePoint.x < maxX
+        && closestSpherePoint.y > minY && closestSpherePoint.y < maxY
+        && closestSpherePoint.z > minZ && closestSpherePoint.z < maxZ
+        && maxZ - closestSpherePoint.z > r/3
+        ) {
+        inside = true;
+    }
+    return inside;
+
+}
+
+function boxCollisions() {
+    
+}
+
+function cylinderCollisions() {
+    
+}
+
 
 //----------------------------------
 //  TEXTURES
