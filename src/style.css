@@ -1,0 +1,24 @@
+.container {
+    display: flex;
+    width: 16px;
+    height: 150px;
+    border: 1px solid #cdcdcd;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    align-items: flex-end;
+}
+.score {
+  display: block;
+  width: 16px;
+  background-color: aqua;
+  margin: 0 auto;
+  vertical-align: bottom;
+  height: 0px;
+  
+  -webkit-transition: 0.4s ease-out;
+    -moz-transition: 0.4s ease-out;
+    -o-transition: 0.4s ease-out;
+    transition: 0.4s ease-out;
+}

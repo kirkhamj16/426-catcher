@@ -11,6 +11,8 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SeedScene } from 'scenes';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 
+// import Score from 'Score.js';
+
 const OIMO = require('oimo');
 const THREE = require('three')
 
@@ -59,6 +61,60 @@ controls.enablePan = false;
 controls.minDistance = 4;
 controls.maxDistance = 2000;
 controls.update();
+
+
+// move to diff file to modularize
+class Score {
+
+    constructor(initialscore) {
+        this.element = document.createElement("DIV");
+        this.element.innerText = initialscore;
+        document.body.appendChild(this.element);
+
+
+
+
+// possible styling for container to put above div into
+       
+        this.element.style.display = "block"; 
+        this.element.style.width = "16px"; 
+        this.element.style.height = "150px"; 
+        this.element.style.border = "1px solid #cdcdcd"; 
+        this.element.style.position = "absolute"; 
+        this.element.style.top = "50%"; 
+        this.element.style.left = "50%"; 
+        this.element.style.transform = "translate(-2500%, -50%)"; 
+        this.element.style['align-items'] = "flex-end"; 
+
+
+       // div styling
+        // this.element.style.display = "block"; 
+        // this.element.style.width = "16px"; 
+        this.element.style['background-color'] = "aqua"; 
+        this.element.style.border = "1px solid #000000"; 
+        // this.element.style.margin = "0 auto"; 
+        // this.element.style['vertical-align'] = "bottom"
+        // this.element.style.height = "0px";
+        this.element.style['text-align'] = "center";
+        // this.element.style.top = "50%"; 
+        // this.element.style.left = "50%"; 
+        // this.element.style.transform = "translate(-2500%, -50%)"; 
+        // this.element.style['align-items'] = "flex-end"; 
+
+
+
+
+    }
+
+    updateScore(newScore) {
+        this.element.innerText = newScore;
+    }
+}    
+
+// set up score
+let score = new Score(0);
+
+
 
 //-----------------------------------------------------------------------
 // DEFINITION OF OMIOS PRIMITIVES
@@ -130,6 +186,7 @@ const onAnimationFrameHandler = (timeStamp) => {
     renderer.render(scene, camera);
     scene.update && scene.update(timeStamp);
     window.requestAnimationFrame(onAnimationFrameHandler);
+    updateScore();
 };
 window.requestAnimationFrame(onAnimationFrameHandler);
 
@@ -577,3 +634,20 @@ function basicTexture(n){
     tx.needsUpdate = true;
     return tx;
 }
+
+
+
+//----------------------------------
+//  POINTS
+//----------------------------------
+
+function updateScore() {
+    // A line somewhere  else in the code base that has access to highScore
+    score.updateScore(winning_points-losing_points);
+}
+
+
+
+
+
+
