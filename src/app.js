@@ -36,6 +36,12 @@ var ToRad = 0.0174532925199432957;
 var type = 1;
 var infos;
 
+// temp color fixes
+var blue = new THREE.MeshLambertMaterial({color: 0x0000FF});
+blue.color = new THREE.Color(0x0000FF);
+var green = new THREE.MeshLambertMaterial({color: 0x7bc059});
+green.color = new THREE.Color(0x7bc059);
+
 
 // Set up renderer, canvas, and minor CSS adjustments
 renderer.setPixelRatio(window.devicePixelRatio);
@@ -84,6 +90,32 @@ mats['ground'] = new THREE[materialType]( {shininess: 10, color:0x3D4143, transp
 //oimo vars
 var world = null;
 var bodys = [];
+
+var loader = new OBJLoader();
+
+// load a resource
+loader.load(
+    // resource URL
+    'models/virus/virus.obj',
+    // called when resource is loaded
+    function ( object ) {
+        geos['virus'] = object.children[0].geometry;
+        populate(1);
+
+    },
+    // called when loading is in progresses
+    function ( xhr ) {
+
+        console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+
+    },
+    // called when loading has errors
+    function ( error ) {
+
+        console.log( 'An error happened' );
+
+    }
+);
 
 
 initOimoPhysics();
@@ -213,7 +245,7 @@ function initOimoPhysics(){
     addStaticBox([40, 40, 390], [-180,20,0], [0,0,0]);
     addStaticBox([40, 40, 390], [180,20,0], [0,0,0]);
     addStaticBox([400, 80, 400], [0,-40,0], [0,0,0]);
-    populate(1)
+    //populate(1)
 
 }
 
@@ -252,15 +284,19 @@ function populate(n) {
       
         if(t===1){
             var random = Math.random();
-            var blue = new THREE.MeshBasicMaterial({color: 0x0000FF});
-            blue.color = new THREE.Color(0x0000FF);
-            var red = new THREE.MeshBasicMaterial({color: 0xFF0000});
-            red.color = new THREE.Color(0xFF0000);
-            if (random < 0.5) var mat = blue;
-            else var mat = red;
+
+            if (random < 0.5) {
+                var mat = blue;
+                var geo = geos.sphere
+            }
+            else {
+                var mat = green;
+                var geo = geos.virus
+                w *= .1
+            }
 
             bodys[i] = world.add({type:'sphere', size:[w*0.5], pos:[x,y,z], move:true, world:world, restitution:.01});
-            meshs[i] = new THREE.Mesh( geos.sphere, mat);
+            meshs[i] = new THREE.Mesh( geo, mat);
             meshs[i].scale.set( w*0.5, w*0.5, w*0.5 );
         } else if(t===2){
             bodys[i] = world.add({type:'box', size:[w,h,d], pos:[x,y,z], move:true, world:world});
@@ -433,8 +469,8 @@ function handleCollisions() {
             let caught = sphereCaught(playerBody, playerMesh, body, mesh);
             if (caught) {
                 console.log(bodys.length);
-                if(meshs[i].material.color.r == 1) losing_points++;
-                if(meshs[i].material.color.b == 1) winning_points++;
+                if(meshs[i].material === green) losing_points++;
+                else winning_points++;
                 bodys.splice(i, 1);
                 scene.remove(meshs[i]);
                 mesh.geometry.dispose();
