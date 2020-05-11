@@ -1,5 +1,5 @@
 import * as Dat from 'dat.gui';
-import { Scene, Color } from 'three';
+import { Scene, Color, CubeTextureLoader, LatheBufferGeometry } from 'three';
 import { Flower, Land } from 'objects';
 import { BasicLights } from 'lights';
 
@@ -16,8 +16,20 @@ class SeedScene extends Scene {
             updateList: [],
         };
 
+       
+        var loader = new CubeTextureLoader();
+
+        const texture = loader.load([
+            './src/textures/right.png',
+            './src/textures/left.png',
+            './src/textures/top.png',
+            './src/textures/bottom.png',
+            './src/textures/front.png',
+            './src/textures/back.png',
+        ]);
+
         // Set background to a nice color
-        this.background = new Color(0x7ec0ee);
+        this.background = texture;
 
         // Add meshes to scene
         //const land = new Land();
