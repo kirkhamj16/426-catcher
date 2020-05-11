@@ -22,5 +22,7 @@ body {
   color: #000000;
 }
 
-
+.canvas {
+  display:hidden;
+}
 

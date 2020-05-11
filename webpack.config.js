@@ -49,6 +49,11 @@ module.exports = {
         },
     },
     plugins: [
-        new HtmlWebpackPlugin({ title: pkg.title, favicon: 'src/favicon.ico' }),
+        // new HtmlWebpackPlugin({ title: pkg.title, favicon: 'src/favicon.ico' }),
+        new HtmlWebpackPlugin({ 
+            title: "Catcher", 
+            favicon: 'images/favicon.png',
+            template: 'src/index.html' 
+        }),
     ],
 };

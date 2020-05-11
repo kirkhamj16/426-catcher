@@ -16,6 +16,8 @@ import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 const OIMO = require('oimo');
 const THREE = require('three')
 
+
+
 // Initialize core ThreeJS components
 const scene = new SeedScene();
 const camera = new PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 5000 );
@@ -45,23 +47,26 @@ var green = new THREE.MeshLambertMaterial({color: 0x7bc059});
 green.color = new THREE.Color(0x7bc059);
 
 
-// Set up renderer, canvas, and minor CSS adjustments
-renderer.setPixelRatio(window.devicePixelRatio);
 const canvas = renderer.domElement;
-canvas.style.display = 'block'; // Removes padding below canvas
-document.body.style.margin = 0; // Removes margin around page
-document.body.style.overflow = 'hidden'; // Fix scrolling
-document.body.appendChild(canvas);
-
-// Set up controls
 const controls = new OrbitControls( camera, canvas );
-controls.update();
-controls.enableDamping = true;
-controls.enablePan = false;
-controls.minDistance = 4;
-controls.maxDistance = 2000;
-controls.update();
 
+function start() {
+    // Set up renderer, canvas, and minor CSS adjustments
+    renderer.setPixelRatio(window.devicePixelRatio);
+    canvas.style.display = 'block'; // Removes padding below canvas
+    canvas.classList.add("mainCanvas")
+    document.body.style.margin = 0; // Removes margin around page
+    document.body.style.overflow = 'hidden'; // Fix scrolling
+    document.body.appendChild(canvas);
+
+    // Set up controls
+    controls.update();
+    controls.enableDamping = true;
+    controls.enablePan = false;
+    controls.minDistance = 4;
+    controls.maxDistance = 2000;
+    controls.update();
+}
 
 // move to diff file to modularize
 class Score {
@@ -212,6 +217,10 @@ const keyDownHandler = (e) => {
         movingLeft = true;
     } else if (e.code == "KeyD") {
         movingRight = true;
+    }
+    else if (e.keyCode==32) {
+        console.log("starting game!");
+        start();
     }
 }
 const keyUpHandler = (e) => {
@@ -645,7 +654,6 @@ function updateScore() {
     // A line somewhere  else in the code base that has access to highScore
     score.updateScore(winning_points-losing_points);
 }
-
 
 
 
