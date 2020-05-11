@@ -10,8 +10,7 @@ import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SeedScene } from 'scenes';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
-
-// import Score from 'Score.js';
+// import Score from "/../src/Score.js"
 
 const OIMO = require('oimo');
 const THREE = require('three')
@@ -45,76 +44,87 @@ var green = new THREE.MeshLambertMaterial({color: 0x7bc059});
 green.color = new THREE.Color(0x7bc059);
 
 
-// Set up renderer, canvas, and minor CSS adjustments
-renderer.setPixelRatio(window.devicePixelRatio);
 const canvas = renderer.domElement;
-canvas.style.display = 'block'; // Removes padding below canvas
-document.body.style.margin = 0; // Removes margin around page
-document.body.style.overflow = 'hidden'; // Fix scrolling
-document.body.appendChild(canvas);
 
-// Set up controls
 const controls = new OrbitControls( camera, canvas );
-controls.update();
-controls.enableDamping = true;
-controls.enablePan = false;
-controls.minDistance = 4;
-controls.maxDistance = 2000;
-controls.update();
+var gameStarted = false;
+
+
+
+
+// add JQUERY!
+injectScriptAndUse();
+function injectScriptAndUse() {
+  var head = document.getElementsByTagName("head")[0];
+  var script = document.createElement("script");
+  script.src = "//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js";
+  script.onload = function() {
+    $("p").css("border", "3px solid red");
+  };
+  head.appendChild(script);
+}
+
+
+function startGame() {
+    // fade out the title and instructions
+    $(".titleScreen").fadeOut('slow', function() {
+        // Set up controls
+        controls.update();
+        controls.enableDamping = true;
+        controls.enablePan = false;
+        controls.minDistance = 4;
+        controls.maxDistance = 2000;
+        controls.update();
+
+        currScore.showScore();
+
+        gameStarted = true; 
+    });
+
+    
+}
+
 
 
 // move to diff file to modularize
 class Score {
-
     constructor(initialscore) {
-        this.element = document.createElement("DIV");
-        this.element.innerText = initialscore;
-        document.body.appendChild(this.element);
+            this.element = document.createElement("DIV");
+            this.element.innerText = initialscore;
 
 
+    // possible styling for container to put above div into
+           
+            this.element.style.width = "16px"; 
+            this.element.style.height = "150px"; 
+            this.element.style.border = "1px solid #cdcdcd"; 
+            this.element.style.position = "absolute"; 
+            this.element.style.top = "50%"; 
+            this.element.style.left = "50%"; 
+            this.element.style.transform = "translate(-2500%, -50%)"; 
+            this.element.style['align-items'] = "flex-end"; 
+            this.element.style['background-color'] = "aqua"; 
+            this.element.style.border = "1px solid #000000"; 
 
-
-// possible styling for container to put above div into
-       
-        this.element.style.display = "block"; 
-        this.element.style.width = "16px"; 
-        this.element.style.height = "150px"; 
-        this.element.style.border = "1px solid #cdcdcd"; 
-        this.element.style.position = "absolute"; 
-        this.element.style.top = "50%"; 
-        this.element.style.left = "50%"; 
-        this.element.style.transform = "translate(-2500%, -50%)"; 
-        this.element.style['align-items'] = "flex-end"; 
-
-
-       // div styling
-        // this.element.style.display = "block"; 
-        // this.element.style.width = "16px"; 
-        this.element.style['background-color'] = "aqua"; 
-        this.element.style.border = "1px solid #000000"; 
-        // this.element.style.margin = "0 auto"; 
-        // this.element.style['vertical-align'] = "bottom"
-        // this.element.style.height = "0px";
-        this.element.style['text-align'] = "center";
-        // this.element.style.top = "50%"; 
-        // this.element.style.left = "50%"; 
-        // this.element.style.transform = "translate(-2500%, -50%)"; 
-        // this.element.style['align-items'] = "flex-end"; 
-
-
+            this.element.style['text-align'] = "center";
+            this.element.style.display = "none"; 
+            this.id = "score";
+            document.body.appendChild(this.element);
 
 
     }
-
+    showScore() {
+        this.element.style.display = "block";
+    }
     updateScore(newScore) {
         this.element.innerText = newScore;
     }
 }    
 
-// set up score
-let score = new Score(0);
 
-
+var currScore = new Score(0);
+var winning_points = 0;
+var losing_points = 0;
 
 //-----------------------------------------------------------------------
 // DEFINITION OF OMIOS PRIMITIVES
@@ -180,14 +190,21 @@ initOimoPhysics();
 
 // Render loop
 const onAnimationFrameHandler = (timeStamp) => {
-    controls.update();
-    updateOimoPhysics();
-    handleCollisions();
-    renderer.render(scene, camera);
-    scene.update && scene.update(timeStamp);
     window.requestAnimationFrame(onAnimationFrameHandler);
-    updateScore();
+    if (gameStarted) {
+        canvas.style.display = "block";
+        controls.update();
+        updateOimoPhysics();
+        handleCollisions();
+        renderer.render(scene, camera);
+        scene.update && scene.update(timeStamp);
+        currScore.updateScore(winning_points-losing_points);
+    }   
+    else {
+        canvas.style.display = "none";
+    }
 };
+
 window.requestAnimationFrame(onAnimationFrameHandler);
 
 // Resize Handler
@@ -212,6 +229,8 @@ const keyDownHandler = (e) => {
         movingLeft = true;
     } else if (e.code == "KeyD") {
         movingRight = true;
+    } else if (e.keyCode == "32" && gameStarted==false) {
+        startGame();
     }
 }
 const keyUpHandler = (e) => {
@@ -488,8 +507,7 @@ function updatePlayerPos() {
 
 }
 
-var winning_points = 0;
-var losing_points = 0;
+
 
 
 //----------------------------------
@@ -646,6 +664,89 @@ function updateScore() {
     score.updateScore(winning_points-losing_points);
 }
 
+
+
+//----------------------------------
+//  SCREENS
+//----------------------------------
+// Create opening screen
+createOpeningScreen();
+
+function createOpeningScreen() {
+    // overarching container containing both start screen and canvas for the game
+    let allContainer = document.createElement("DIV");
+    allContainer.style.position = "relative";
+
+     // Set up renderer, canvas, and minor CSS adjustments
+    renderer.setPixelRatio(window.devicePixelRatio);
+    canvas.style.display = 'block'; // Removes padding below canvas
+    canvas.style.position = "relative"; // I ADDED THIS!
+    canvas.id = "mainCanvas";
+    allContainer.style.margin = 0; // Removes margin around page
+    allContainer.style.overflow = 'hidden'; // Fix scrolling
+    // document.body.appendChild(canvas);
+    allContainer.appendChild(canvas);
+
+
+    // create start screen
+    let startScreenDiv = document.createElement("DIV");
+    startScreenDiv.style.position = "relative";
+    startScreenDiv.className = "titleScreen";
+
+        let title = document.createElement("DIV");
+        title.innerText = "Catcher";
+        title.style['font-size'] = "96px"; 
+        title.style.width = "100%"; 
+        title.style['text-align'] = "center";
+        title.style['color'] = "#000000";
+        title.id = "title";
+        title.className = "titleScreen";
+        // element.style.transform = "translate(0%, -50%)"; 
+        startScreenDiv.appendChild(title);
+
+        // instruction container and instructions
+        let instructionContainer = document.createElement("DIV");
+        instructionContainer.style['border-radius'] = "20px";
+        instructionContainer.style['display'] = "inline-block";
+        instructionContainer.style['flex-wrap'] = "wrap";
+        instructionContainer.style['background-color'] = "ffffff";
+        instructionContainer.style['text-align'] = "center";
+        instructionContainer.style['padding'] = "30px";
+        instructionContainer.style['background-color'] = "#9EC1A3";
+        instructionContainer.className = "titleScreen";
+        startScreenDiv.appendChild(instructionContainer);
+
+            let instructions = document.createElement("DIV");
+            instructions.innerHTML = "Catch the PPE equipment and vaccine materials while avoiding the virus particles!</br>Press the space bar to start the game!";
+            instructions.style['font-size'] = "20px"; 
+            instructions.style.width = "100%"; 
+            instructions.style['text-align'] = "center";
+            instructions.style['color'] = "#8075FF";
+            instructions.id = "instructions";
+            instructions.className = "titleScreen";
+            // element.style.transform = "translate(0%, -50%)"; 
+            instructionContainer.appendChild(instructions);
+
+    allContainer.appendChild(startScreenDiv);
+         
+    document.body.appendChild(allContainer);
+    allContainer.position = "absolute";
+    canvas.position = "absolute";
+
+
+    // CSS for body overall
+    document.body.style['font-family'] = "Lucida Console";
+    document.body.style['height'] = "100%";
+    document.body.style['background-image'] = "url('../images/tubes3.jpg')";
+    document.body.style['background-size'] = "cover";
+    document.body.style['text-align'] = "center";
+
+    let s = new Score(0);
+    currScore = s;
+
+
+
+}
 
 
 
