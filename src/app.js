@@ -8,7 +8,7 @@
  */
 import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
-import { SeedScene } from 'scenes';
+import { SeedScene, Cam } from 'scenes';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 // import Score from "/../src/Score.js"
 
@@ -17,9 +17,9 @@ const THREE = require('three')
 
 // Initialize core ThreeJS components
 const scene = new SeedScene();
-const camera = new PerspectiveCamera( 60, window.innerWidth / window.innerHeight, 1, 5000 );
-camera.position.set(0,350,500); // Set position like this
-camera.lookAt(new THREE.Vector3(0,0,0)); // Set look at coordinate like this
+const camera = new Cam();
+//camera.position.set(0,350,500); // Set position like this
+//camera.lookAt(new THREE.Vector3(0,0,0)); // Set look at coordinate like this
 
 const renderer = new WebGLRenderer({ antialias: true });
 var meshs = [];
@@ -47,6 +47,7 @@ green.color = new THREE.Color(0x7bc059);
 const canvas = renderer.domElement;
 
 const controls = new OrbitControls( camera, canvas );
+
 var gameStarted = false;
 
 
@@ -151,6 +152,7 @@ mats['ssph']   = new THREE[materialType]( {shininess: 10, map: basicTexture(1), 
 mats['sbox']   = new THREE[materialType]( {shininess: 10, map: basicTexture(3), name:'sbox' } );
 mats['scyl']   = new THREE[materialType]( {shininess: 10, map: basicTexture(5), name:'scyl' } );
 mats['ground'] = new THREE[materialType]( {shininess: 10, color:0x3D4143, transparent:true, opacity:0.5 } );
+mats['beaker'] = new THREE[materialType]( {shininess: 100, color: 0xC2C2C2, transparent:true, opacity:0.95} );
 
 
 //oimo vars
@@ -165,7 +167,9 @@ loader.load(
     'models/virus/virus.obj',
     // called when resource is loaded
     function ( object ) {
-        geos['virus'] = object.children[0].geometry;
+        let geo = object.children[0].geometry;
+        geo.translate(0, -10.5, 0);
+        geos['virus'] = geo;
         populate(1);
 
     },
@@ -194,6 +198,7 @@ const onAnimationFrameHandler = (timeStamp) => {
     if (gameStarted) {
         canvas.style.display = "block";
         controls.update();
+        camera.update(meshs[0].position);
         updateOimoPhysics();
         handleCollisions();
         renderer.render(scene, camera);
@@ -298,7 +303,7 @@ function initOimoPhysics(){
     });
 
     //bodys[i] = b.body;
-    let player_mesh = new THREE.Mesh( bucketGeometry, mats['cyl'] );
+    let player_mesh = new THREE.Mesh( bucketGeometry, mats['cyl' ] );
 
     //meshs[i].castShadow = true;
     //meshs[i].receiveShadow = true;
@@ -360,7 +365,7 @@ function populate(n) {
       
         if(t===1){
             var random = Math.random();
-
+            let model_scale = 1;
             if (random < 0.5) {
                 var mat = blue;
                 var geo = geos.sphere
@@ -368,12 +373,16 @@ function populate(n) {
             else {
                 var mat = green;
                 var geo = geos.virus
-                w *= .1
+                model_scale = .09
             }
 
             bodys[i] = world.add({type:'sphere', size:[w*0.5], pos:[x,y,z], move:true, world:world, restitution:.01});
             meshs[i] = new THREE.Mesh( geo, mat);
-            meshs[i].scale.set( w*0.5, w*0.5, w*0.5 );
+            meshs[i].scale.set( w*0.5*model_scale, w*0.5*model_scale, w*0.5*model_scale );
+            // let debug = new THREE.Mesh( geos.sphere, mats.box );
+            // debug.scale.set( w * 0.5, w * 0.5, w * 0.5 );
+            // debug.position.copy(bodys[i].position)
+            // scene.add(debug);
         } else if(t===2){
             bodys[i] = world.add({type:'box', size:[w,h,d], pos:[x,y,z], move:true, world:world});
             meshs[i] = new THREE.Mesh( geos.box, mats.box );
@@ -498,10 +507,13 @@ function updatePlayerPos() {
     if (!(movingUp || movingDown || movingLeft || movingRight)) {
         player_body.linearVelocity.scaleEqual(0.95)
     }
-    if (player_body.position.y != 5.0) {
-        player_body.position.y = 5;
+    if (player_body.position.y != 10.2) {
+        player_body.position.y = 10.2;
     }
     player_body.angularVelocity = new OIMO.Vec3(0, 0, 0)
+    player_body.quaternion.x = 0;
+    player_body.quaternion.y = 0;
+    player_body.quaternion.z = 0;
     player_mesh.position.copy(player_body.getPosition());
     player_mesh.quaternion.copy(player_body.getQuaternion());
 
