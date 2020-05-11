@@ -60,7 +60,10 @@ function injectScriptAndUse() {
   var script = document.createElement("script");
   script.src = "//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js";
   script.onload = function() {
-    $("p").css("border", "3px solid red");
+    // hide the parameter bar initially
+    $(".dg.main.a").attr("id", "parameters");
+    $(".dg.main.a").hide();
+
   };
   head.appendChild(script);
 }
@@ -77,7 +80,9 @@ function startGame() {
         controls.maxDistance = 2000;
         controls.update();
 
+        // show score
         currScore.showScore();
+        $(".dg.main.a").show();
 
         gameStarted = true; 
     });
@@ -207,6 +212,8 @@ const onAnimationFrameHandler = (timeStamp) => {
     }   
     else {
         canvas.style.display = "none";
+
+
     }
 };
 
@@ -694,8 +701,10 @@ function createOpeningScreen() {
     canvas.style.display = 'block'; // Removes padding below canvas
     canvas.style.position = "relative"; // I ADDED THIS!
     canvas.id = "mainCanvas";
+    canvas.style['z-index'] = "1";
     allContainer.style.margin = 0; // Removes margin around page
     allContainer.style.overflow = 'hidden'; // Fix scrolling
+    allContainer.id = "allContainer";
     // document.body.appendChild(canvas);
     allContainer.appendChild(canvas);
 
@@ -741,21 +750,35 @@ function createOpeningScreen() {
 
     allContainer.appendChild(startScreenDiv);
          
+
+    // place parameter bar in proper position
+    let params = document.getElementsByClassName("dg ac");
+    let param = params[0];
+    param.parentNode.removeChild(param);
+    allContainer.appendChild(param);
+    param.style['z-index'] = "2";
+
+
+   
+
+
     document.body.appendChild(allContainer);
     allContainer.position = "absolute";
     canvas.position = "absolute";
 
 
-    // CSS for body overall
+    // Create background image and body CSS
     document.body.style['font-family'] = "Lucida Console";
     document.body.style['height'] = "100%";
     document.body.style['background-image'] = "url('../images/tubes3.jpg')";
     document.body.style['background-size'] = "cover";
     document.body.style['text-align'] = "center";
+    document.body.style.margin = "0px";
 
     let s = new Score(0);
     currScore = s;
 
+        
 
 
 }
