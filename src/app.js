@@ -171,12 +171,17 @@ class Score {
         beaker.style['text-align'] = "center";
         beaker.style.display = "none"; 
         beaker.style['z-index'] = "2";
+        beaker.style.height="100%"
         beaker.classList.add("beaker");
         let glass = document.createElement("DIV");
         glass.classList.add("glass");
+        glass.style.height="100%"
+        glass.style['z-index'] = "3";
         beaker.appendChild(glass);
         let water = document.createElement("DIV");
+        water.style.height="100%"
         water.classList.add("water");
+        water.style['z-index'] = "4";
         glass.appendChild(water);
 
         this.element.appendChild(beaker);

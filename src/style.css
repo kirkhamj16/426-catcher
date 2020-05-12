@@ -1,3 +1,6 @@
+/* https://priteshgupta.com/2011/07/filling-a-glass-with-water-using-html5/ */
+
+/* From above link */
 .beaker {
     background: rgba( 0, 0, 0, 0.10);
     margin-left:auto;
@@ -15,7 +18,7 @@
     padding-bottom: 30px;
     padding-top: 5px;
 }
-.beakerGlass {
+.glass {
     background: rgba( 255, 255, 255, 0.50);
     border: 1px solid #bbb;
     border-top: 1px solid #eee;  
@@ -26,7 +29,7 @@
     height: 400px;
     position: relative;
 }
-.beakerWater {
+.water {
     background-color: #9cc6ff;   
     position: absolute;
     bottom: 0px;
