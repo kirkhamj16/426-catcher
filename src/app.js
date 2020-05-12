@@ -103,14 +103,13 @@ class Score {
            
             this.element.style.width = "16px"; 
             this.element.style.height = "150px"; 
-            this.element.style.border = "1px solid #cdcdcd"; 
             this.element.style.position = "absolute"; 
             this.element.style.top = "50%"; 
             this.element.style.left = "50%"; 
             this.element.style.transform = "translate(-2500%, -50%)"; 
             this.element.style['align-items'] = "flex-end"; 
-            this.element.style['background-color'] = "aqua"; 
-            this.element.style.border = "1px solid #000000"; 
+            this.element.style['background-color'] = "#5dbcd2"; 
+            this.element.style.border = "1px solid #ffffff"; 
 
             this.element.style['text-align'] = "center";
             this.element.style.display = "none"; 
@@ -121,6 +120,7 @@ class Score {
     }
     showScore() {
         this.element.style.display = "block";
+        this.element.style['z-index'] = "2"
     }
     updateScore(newScore) {
         this.element.innerText = newScore;
