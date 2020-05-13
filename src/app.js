@@ -69,8 +69,20 @@ function injectScriptAndUse() {
   head.appendChild(script);
 }
 
+// add CSS
+injectCSS();
+function injectCSS() {
+  var head = document.getElementsByTagName("head")[0];
+  var link = document.createElement("link");
+  link.href = "/src/style.css";
+  link.type="text/css";
+  link.rel="stylesheet";
+  head.appendChild(link);
+}
+
 
 function startGame() {
+    let count = 0;
     // fade out the title and instructions
     $(".titleScreen").fadeOut('slow', function() {
         // Set up controls
@@ -82,8 +94,11 @@ function startGame() {
         controls.update();
 
         // show score
-        currScore.showScore();
-        $(".dg.main.a").show();
+        if (count == 0) {
+            currScore.showScore();
+            $(".dg.main.a").show();
+        }
+        count = 1;
 
         gameStarted = true; 
     });
@@ -97,34 +112,93 @@ function startGame() {
 class Score {
     constructor(initialscore) {
             this.element = document.createElement("DIV");
-            this.element.innerText = initialscore;
-
-
-    // possible styling for container to put above div into
-           
             this.element.style.width = "16px"; 
-            this.element.style.height = "150px"; 
-            this.element.style.border = "1px solid #cdcdcd"; 
+            this.element.style.height = "20px"; 
             this.element.style.position = "absolute"; 
             this.element.style.top = "50%"; 
             this.element.style.left = "50%"; 
             this.element.style.transform = "translate(-2500%, -50%)"; 
             this.element.style['align-items'] = "flex-end"; 
-            this.element.style['background-color'] = "aqua"; 
-            this.element.style.border = "1px solid #000000"; 
+            // this.element.style['background-color'] = "#5dbcd2"; 
+            this.element.style.border = "1px solid #ffffff"; 
 
             this.element.style['text-align'] = "center";
             this.element.style.display = "none"; 
-            this.id = "score";
+            this.id = "scoreContainer";
+
+            let score = document.createElement("DIV");
+            score.id = "score";
+            score.style['z-index'] = "3";
+            score.style['background-color']="#5dbcd2"
+            score.style.height = "20px";
+            score.style.width = "16px";
+            score.style.width = "16px";
+            score.style['color'] = "#000000";
+            score.innerText="10";
+            // score.style.width = "20";
+            // score.style.height = "20";
+
+            this.element.appendChild(score);
+
+
+
             document.body.appendChild(this.element);
 
 
     }
     showScore() {
         this.element.style.display = "block";
+        this.element.style['z-index'] = "2"
+
+        // for some reason need to access element's children have changes be reflected
+        let children = this.element.children;
+        for (let child of children) {
+            if (child.id == "score") {
+                child.innerText = "0";
+            }
+        }
+
+        let beaker = document.createElement("DIV");
+        beaker.style.width = "16px"; 
+        // beaker.style.height = "150px"; 
+        beaker.style.position = "absolute"; 
+        beaker.style.top = "50%"; 
+        beaker.style.left = "50%"; 
+        beaker.transform = "translate(-5000%, -50%)"; 
+        // beaker.style['align-items'] = "flex-end"; 
+        // beaker.style['background-color'] = "#5dbcd2"; 
+        // beaker.style.border = "1px solid #ffffff"; 
+
+        beaker.style['text-align'] = "center";
+        beaker.style.display = "none"; 
+        beaker.style['z-index'] = "2";
+        beaker.style.height="100%"
+        beaker.classList.add("beaker");
+        let glass = document.createElement("DIV");
+        glass.classList.add("glass");
+        glass.style.height="100%"
+        glass.style['z-index'] = "3";
+        beaker.appendChild(glass);
+        let water = document.createElement("DIV");
+        water.style.height="100%"
+        water.classList.add("water");
+        water.style['z-index'] = "4";
+        glass.appendChild(water);
+
+        this.element.appendChild(beaker);
+
+       
     }
     updateScore(newScore) {
-        this.element.innerText = newScore;
+        let children = this.element.children;
+        for (let child of children) {
+            if (child.id == "score") {
+                child.innerText = newScore;
+            }
+        }
+        // this.element.innerText = newScore;
+        // let score = document.getElementById("score");
+        // score.innerText="0";
     }
 }    
 
@@ -563,7 +637,7 @@ function handleCollisions() {
         if (body.type == SHAPE_SPHERE) {
             let caught = sphereCaught(playerBody, playerMesh, body, mesh);
             if (caught) {
-                console.log(bodys.length);
+                // console.log(bodys.length);
                 if(meshs[i].material === green) losing_points++;
                 else winning_points++;
                 bodys.splice(i, 1);
@@ -576,8 +650,8 @@ function handleCollisions() {
                 i--;
                 objNum--;
 
-                console.log(bodys.length);
-                console.log(winning_points - losing_points);
+                // console.log(bodys.length);
+                // console.log(winning_points - losing_points);
             }
         }
         else if (body.type == SHAPE_BOX) {
