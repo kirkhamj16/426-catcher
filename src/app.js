@@ -357,7 +357,7 @@ function initOimoPhysics(){
     worldscale: 1, // scale full world 
     random: true,  // randomize sample
     info: false,   // calculate statistic or not
-    gravity: [0,-1,0] });
+    gravity: [0,-3,0] });
     initbucketGeometry();
     let x, y, z, w, h, d;
 
@@ -413,7 +413,7 @@ function initOimoPhysics(){
     addStaticBox([800, 80, 800], [0,-40,0], [0,0,0]);
 
     // ground test 
-    {
+   /* {
         const cubeSize = 4;
         const cubeGeo = new THREE.BoxBufferGeometry(cubeSize, cubeSize, cubeSize);
         const cubeMat = new THREE.MeshPhongMaterial({color: '#8AC'});
@@ -422,7 +422,7 @@ function initOimoPhysics(){
         mesh.receiveShadow = true;
         mesh.position.set(cubeSize + 1, cubeSize / 2, 0);
         scene.add(mesh);
-      }
+      }*/
     //populate(1)
 
 }
@@ -430,7 +430,7 @@ function initOimoPhysics(){
 
 function populate(n) {
     var type;
-    var max = 200;
+    var max = 250;
     if(n===1) type = 1
     else if(n===2) type = 2;
     else if(n===3) type = 3;
@@ -473,7 +473,7 @@ function populate(n) {
                 model_scale = .09
             }
 
-            bodys[i] = world.add({type:'sphere', size:[w*0.5], pos:[x,y,z], move:true, world:world, restitution:.01});
+            bodys[i] = world.add({type:'sphere', size:[w*0.5], pos:[x,y,z], move:true, world:world, restitution:0.5});
             meshs[i] = new THREE.Mesh( geo, mat);
             meshs[i].scale.set( w*0.5*model_scale, w*0.5*model_scale, w*0.5*model_scale );
             // let debug = new THREE.Mesh( geos.sphere, mats.box );
