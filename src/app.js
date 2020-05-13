@@ -10,6 +10,7 @@ import { WebGLRenderer, PerspectiveCamera, Vector3 } from 'three';
 import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SeedScene, Cam } from 'scenes';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
+import VIRUS from '../models/virus/virus.obj';
 // import Score from "/../src/Score.js"
 
 const OIMO = require('oimo');
@@ -169,7 +170,7 @@ var loader = new OBJLoader();
 // load a resource
 loader.load(
     // resource URL
-    'models/virus/virus.obj',
+    VIRUS,
     // called when resource is loaded
     function ( object ) {
         let geo = object.children[0].geometry;
