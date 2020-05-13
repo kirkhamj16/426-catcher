@@ -5,8 +5,8 @@ class BasicLights extends Group {
         // Invoke parent Group() constructor with our args
         super(...args);
 
-        const dir = new SpotLight(0x0000ff, 0.9, 500, 1, 0, 0);
-        const direct = new DirectionalLight(0xffffff, 0.6);
+        const dir = new SpotLight(0xabbcff, 1, 500, 1, 0, 0);
+        const direct = new DirectionalLight(0xffffff, 0.5);
         direct.position.set(0, 400, 0);
         direct.castShadow = true;
      
@@ -20,10 +20,10 @@ class BasicLights extends Group {
        
         this.add(direct, test, dir);
         //direct.shadow.camera
-        direct.shadow.camera.left = -200;
-        direct.shadow.camera.bottom = -100;
-        direct.shadow.camera.right = 200;
-        direct.shadow.camera.top = 100;
+        direct.shadow.camera.left = -500;
+        direct.shadow.camera.bottom = -500;
+        direct.shadow.camera.right = 500;
+        direct.shadow.camera.top = 500;
         direct.shadow.near = 50;
         const cameraHelper1 = new CameraHelper(direct.shadow.camera);
         this.add(cameraHelper1);
