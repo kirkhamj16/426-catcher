@@ -23,6 +23,8 @@ const camera = new Cam();
 //camera.lookAt(new THREE.Vector3(0,0,0)); // Set look at coordinate like this
 
 const renderer = new WebGLRenderer({ antialias: true });
+renderer.shadowMap.enabled = true;
+renderer.shadowMapEnabled = true;
 var meshs = [];
 var grounds = [];
 
@@ -46,7 +48,6 @@ green.color = new THREE.Color(0x7bc059);
 
 
 const canvas = renderer.domElement;
-
 const controls = new OrbitControls( camera, canvas );
 
 var gameStarted = false;
@@ -101,6 +102,7 @@ function startGame() {
         count = 1;
 
         gameStarted = true; 
+
     });
 
     
@@ -215,7 +217,7 @@ var mats = {};
 var types, sizes, positions, bucketGeometry;
 var geoBox = new THREE.BoxGeometry(1,1,1);
 var geoCyl = new THREE.CylinderGeometry( 0.5, 0.5, 1, 6, 1 );
-var materialType = 'MeshBasicMaterial';
+var materialType = 'MeshPhongMaterial';
 
 
 // geometrys
@@ -231,8 +233,8 @@ mats['cyl']    = new THREE[materialType]( {shininess: 10, map: basicTexture(4), 
 mats['ssph']   = new THREE[materialType]( {shininess: 10, map: basicTexture(1), name:'ssph' } );
 mats['sbox']   = new THREE[materialType]( {shininess: 10, map: basicTexture(3), name:'sbox' } );
 mats['scyl']   = new THREE[materialType]( {shininess: 10, map: basicTexture(5), name:'scyl' } );
-mats['ground'] = new THREE[materialType]( {shininess: 10, color:0x3D4143, transparent:true, opacity:0.5 } );
-mats['beaker'] = new THREE[materialType]( {shininess: 100, color: 0xC2C2C2, transparent:true, opacity:0.95} );
+mats['ground'] = new THREE[materialType]( {shininess: 10, color:0x3D4143, transparent:false, opacity:0.5 } );
+mats['beaker'] = new THREE[materialType]( {shininess: 100, color: 0xC2C2C2, transparent:true, opacity:0.5} );
 
 
 //oimo vars
@@ -354,7 +356,7 @@ function initOimoPhysics(){
     worldscale: 1, // scale full world 
     random: true,  // randomize sample
     info: false,   // calculate statistic or not
-    gravity: [0,-9.8,0] });
+    gravity: [0,-1,0] });
     initbucketGeometry();
     let x, y, z, w, h, d;
 
@@ -385,14 +387,14 @@ function initOimoPhysics(){
     });
 
     //bodys[i] = b.body;
-    let player_mesh = new THREE.Mesh( bucketGeometry, mats['cyl' ] );
+    let player_mesh = new THREE.Mesh( bucketGeometry, mats['beaker' ] );
+    debugger;
+    // meshs[i].castShadow = true;
+    // meshs[i].receiveShadow = true;
 
-    //meshs[i].castShadow = true;
-    //meshs[i].receiveShadow = true;
 
-
-    //player_mesh.castShadow = true;
-    //player_mesh.receiveShadow = true;
+    player_mesh.castShadow = true;
+    player_mesh.receiveShadow = true;
     meshs[0] = player_mesh;
     bodys[0] = player_body;
     // 
@@ -405,9 +407,21 @@ function initOimoPhysics(){
     var ground1 = world.add({size:[40, 40, 390], pos:[180,20,0], world:world});
     var ground2 = world.add({size:[400, 80, 400], pos:[0,-40,0], world:world});
 
-    addStaticBox([40, 40, 390], [-180,20,0], [0,0,0]);
-    addStaticBox([40, 40, 390], [180,20,0], [0,0,0]);
+    // addStaticBox([40, 40, 390], [-180,20,0], [0,0,0]);
+    // addStaticBox([40, 40, 390], [180,20,0], [0,0,0]);
     addStaticBox([400, 80, 400], [0,-40,0], [0,0,0]);
+
+    // ground test 
+    {
+        const cubeSize = 4;
+        const cubeGeo = new THREE.BoxBufferGeometry(cubeSize, cubeSize, cubeSize);
+        const cubeMat = new THREE.MeshPhongMaterial({color: '#8AC'});
+        const mesh = new THREE.Mesh(cubeGeo, cubeMat);
+        mesh.castShadow = true;
+        mesh.receiveShadow = true;
+        mesh.position.set(cubeSize + 1, cubeSize / 2, 0);
+        scene.add(mesh);
+      }
     //populate(1)
 
 }
@@ -438,7 +452,7 @@ function populate(n) {
         else t = type;
         x = -100 + Math.random()*200;
         z = -100 + Math.random()*200;
-        y = 100 + Math.random()*1000;
+        y = 400 + Math.random()*5000;
 
         w = 10 + Math.random()*10;
         h = 10 + Math.random()*10;
@@ -501,7 +515,7 @@ function initbucketGeometry() {
     let w = 50
     let h = 40
     types = [ 'box', 'box', 'box', 'box', 'box'];
-    sizes = [ w,5,w,  4,h,w,  w,h,4,  4,h,w,  w,h,4];
+    sizes = [ w+4,5,w,  4,h,w+4,  w+4,h,4,  4,h,w+4,  w+4,h,4];
     positions = [ 0,0,0,  w/2,10,0,  0,10,w/2,   -1*(w/2),10,0,    0,10,-1*(w/2)];
 
     var g = new THREE.Geometry();
