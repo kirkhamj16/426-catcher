@@ -233,8 +233,9 @@ mats['cyl']    = new THREE[materialType]( {shininess: 10, map: basicTexture(4), 
 mats['ssph']   = new THREE[materialType]( {shininess: 10, map: basicTexture(1), name:'ssph' } );
 mats['sbox']   = new THREE[materialType]( {shininess: 10, map: basicTexture(3), name:'sbox' } );
 mats['scyl']   = new THREE[materialType]( {shininess: 10, map: basicTexture(5), name:'scyl' } );
-mats['ground'] = new THREE[materialType]( {shininess: 10, color:0x3D4143, transparent:false, opacity:0.5 } );
-mats['beaker'] = new THREE[materialType]( {shininess: 100, color: 0xC2C2C2, transparent:true, opacity:0.5} );
+mats['ground'] = new THREE[materialType]( {shininess: 10, color:0x3D4143, transparent:true, opacity:0.5 } );
+mats['beaker'] = new THREE[materialType]( {shininess: 1000, color: 0xC2C2C2, transparent:true, opacity:0.5} );
+mats['wall'] = new THREE[materialType]( {shininess: 10, color:0x0000c2, transparent:true, opacity:0.7 } );
 
 
 //oimo vars
@@ -403,13 +404,13 @@ function initOimoPhysics(){
 
 
     // SCENE PHYSICS DECLARATIONS 
-    var ground0 = world.add({size:[40, 40, 390], pos:[-180,20,0], world:world});
-    var ground1 = world.add({size:[40, 40, 390], pos:[180,20,0], world:world});
-    var ground2 = world.add({size:[400, 80, 400], pos:[0,-40,0], world:world});
+    var ground0 = world.add({size:[40, 40, 790], pos:[-380,0,0], rot:[0,0,-45], world:world});
+    var ground1 = world.add({size:[40, 40, 790], pos:[380,0,0], rot:[0,0,45], world:world});
+    var ground2 = world.add({size:[800, 80, 800], pos:[0,-40,0], world:world});
 
-    // addStaticBox([40, 40, 390], [-180,20,0], [0,0,0]);
-    // addStaticBox([40, 40, 390], [180,20,0], [0,0,0]);
-    addStaticBox([400, 80, 400], [0,-40,0], [0,0,0]);
+    addWall([40, 40, 790], [-380,0,0], [0,0,-45]);
+    addWall([40, 40, 790], [380,0,0], [0,0,45]);
+    addStaticBox([800, 80, 800], [0,-40,0], [0,0,0]);
 
     // ground test 
     {
@@ -429,7 +430,7 @@ function initOimoPhysics(){
 
 function populate(n) {
     var type;
-    var max = 100;
+    var max = 200;
     if(n===1) type = 1
     else if(n===2) type = 2;
     else if(n===3) type = 3;
@@ -450,9 +451,9 @@ function populate(n) {
         var t;
         if(type===4) t = Math.floor(Math.random()*3)+1;
         else t = type;
-        x = -100 + Math.random()*200;
-        z = -100 + Math.random()*200;
-        y = 400 + Math.random()*5000;
+        x = -400 + Math.random()*800;
+        z = -400 + Math.random()*800;
+        y = 350 + Math.random()*5000;
 
         w = 10 + Math.random()*10;
         h = 10 + Math.random()*10;
@@ -502,6 +503,17 @@ function populate(n) {
 
 function addStaticBox(size, position, rotation) {
     var mesh = new THREE.Mesh( geos.box, mats.ground );
+    mesh.scale.set( size[0], size[1], size[2] );
+    mesh.position.set( position[0], position[1], position[2] );
+    mesh.rotation.set( rotation[0]*ToRad, rotation[1]*ToRad, rotation[2]*ToRad );
+    scene.add( mesh );
+    grounds.push(mesh);
+    mesh.castShadow = true;
+    mesh.receiveShadow = true;
+}
+
+function addWall(size, position, rotation) {
+    var mesh = new THREE.Mesh( geos.box, mats.wall);
     mesh.scale.set( size[0], size[1], size[2] );
     mesh.position.set( position[0], position[1], position[2] );
     mesh.rotation.set( rotation[0]*ToRad, rotation[1]*ToRad, rotation[2]*ToRad );
@@ -688,12 +700,12 @@ function sphereCaught(playerBody, playerMesh, body, mesh) {
     let centerToSphereSurface = vec.clone().normalize().multiplyScalar(r);
     let closestSpherePoint = body.position.clone().add(centerToSphereSurface);
     // let closestSpherePoint = body.position;
-    let minX = playerBody.position.x - playerBody.shapes.halfWidth;
-    let maxX = playerBody.position.x + playerBody.shapes.halfWidth;
+    let minX = playerBody.position.x - playerBody.shapes.halfWidth + 4;
+    let maxX = playerBody.position.x + playerBody.shapes.halfWidth - 4;
     let minY = playerBody.position.y - playerBody.shapes.halfWidth;
     let maxY = playerBody.position.y + playerBody.shapes.halfWidth;
-    let minZ = playerBody.position.z - playerBody.shapes.halfHeight;
-    let maxZ = playerBody.position.z + playerBody.shapes.halfHeight;
+    let minZ = playerBody.position.z - playerBody.shapes.halfHeight + 4;
+    let maxZ = playerBody.position.z + playerBody.shapes.halfHeight - 4;
 
     // console.log(minX, maxX, " and ", minY, maxY, " and ", minZ, maxZ);
     // console.log(body.position.x, body.position.y, body.position.z)
@@ -703,7 +715,7 @@ function sphereCaught(playerBody, playerMesh, body, mesh) {
     if (closestSpherePoint.x > minX && closestSpherePoint.x < maxX
         && closestSpherePoint.y > minY && closestSpherePoint.y < maxY
         && closestSpherePoint.z > minZ && closestSpherePoint.z < maxZ
-        && maxZ - closestSpherePoint.z > r/3
+        && maxY - closestSpherePoint.y > 2*r
         ) {
         inside = true;
     }
