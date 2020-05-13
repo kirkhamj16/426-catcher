@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<!-- favicon -->
+		<!-- Icon below made by <a href="https://www.flaticon.com/authors/kiranshastry" title="Kiranshastry">Kiranshastry</a> from <a href="https://www.flaticon.com/" title="Flaticon"> www.flaticon.com</a> -->
+		<link rel="icon" type="image/png" href="images/favicon.png">
+		<meta name="theme-color" content="#000000">
+		<!-- Quicksand font -->
+		<link href="https://fonts.googleapis.com/css?family=Poppins" rel="stylesheet">
+
+		<link href="css/home.css" rel="stylesheet">
+		<title>Catcher</title>
+	</head>
+	<body>
+		<div id="title">Catcher</div>
+		<div class="container loadScreen"  id='menu'>
+			<p class="instructions">
+				Catch the PPE equipment and vaccine materials while avoiding the virus particles! </br>
+				Press the space bar to start the game!
+			</p>
+		</div>
+
+
+		<div class="endScreen" id='endMessage'>
+			Press the space bar to play again.
+		</div>
+
+		<script>
+			$(document).ready(function() {
+				$('.loadScreen').show();
+				$('#counter').hide();
+				$('.endScreen').hide();
+			})
+		</script>
+		<script src="src/app.js"></script>  <!-- may not need this line -->
+	</body>
+</html>
