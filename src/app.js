@@ -955,6 +955,17 @@ function updateScore() {
 createOpeningScreen();
 
 function createOpeningScreen() {
+    // make html screen fit full screen
+    document.documentElement.style['height'] = "100%";
+    // Create background image and body CSS
+    document.body.style['font-family'] = "Lucida Console";
+    document.body.style['height'] = "100%";
+    document.body.style['background-image'] = "url(".concat(TUBES3.concat(")"));
+    document.body.style['background-size'] = "cover";
+    document.body.style['text-align'] = "center";
+    document.body.style.margin = "0px";
+
+
     // overarching container containing both start screen and canvas for the game
     let allContainer = document.createElement("DIV");
     allContainer.style.position = "relative";
@@ -968,6 +979,7 @@ function createOpeningScreen() {
     allContainer.style.margin = 0; // Removes margin around page
     allContainer.style.overflow = 'hidden'; // Fix scrolling
     allContainer.id = "allContainer";
+    allContainer.style['height'] = "100%";
     // document.body.appendChild(canvas);
     allContainer.appendChild(canvas);
 
@@ -976,6 +988,10 @@ function createOpeningScreen() {
     let startScreenDiv = document.createElement("DIV");
     startScreenDiv.style.position = "relative";
     startScreenDiv.className = "titleScreen";
+    startScreenDiv.style.top = "5%";
+    startScreenDiv.style.display = "block";
+    // startScreenDiv.style.top = "25%";
+
 
         let title = document.createElement("DIV");
         title.innerText = "Catcher";
@@ -983,8 +999,12 @@ function createOpeningScreen() {
         title.style.width = "100%"; 
         title.style['text-align'] = "center";
         title.style['color'] = "#000000";
+        title.style['padding'] = "10px";
         title.id = "title";
+
         title.className = "titleScreen";
+
+
         // element.style.transform = "translate(0%, -50%)"; 
         startScreenDiv.appendChild(title);
 
@@ -998,10 +1018,13 @@ function createOpeningScreen() {
         instructionContainer.style['padding'] = "30px";
         instructionContainer.style['background-color'] = "#9EC1A3";
         instructionContainer.className = "titleScreen";
+        // instructionContainer.style.height = "100%";
+        instructionContainer.style.top = "50%";
+
         startScreenDiv.appendChild(instructionContainer);
 
             let instructions = document.createElement("DIV");
-            instructions.innerHTML = "Catch the PPE equipment and vaccine materials while avoiding the virus particles!</br>Press the space bar to start the game!";
+            instructions.innerHTML = "Catch the PPE equipment and vaccine materials while avoiding the virus particles!</br></br>Press the space bar to start the game!";
             instructions.style['font-size'] = "20px"; 
             instructions.style.width = "100%"; 
             instructions.style['text-align'] = "center";
@@ -1021,22 +1044,13 @@ function createOpeningScreen() {
     //allContainer.appendChild(param);
     //param.style['z-index'] = "2";
 
-
-   
-
-
     document.body.appendChild(allContainer);
     allContainer.position = "absolute";
     canvas.position = "absolute";
 
 
-    // Create background image and body CSS
-    document.body.style['font-family'] = "Lucida Console";
-    document.body.style['height'] = "100%";
-    document.body.style['background-image'] = "url(".concat(TUBES3.concat(")"));
-    document.body.style['background-size'] = "cover";
-    document.body.style['text-align'] = "center";
-    document.body.style.margin = "0px";
+   
+
 
     let s = new Score(0);
     currScore = s;
