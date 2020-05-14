@@ -1131,7 +1131,7 @@ function createEndScreen() {
             endScreenDiv.className = "winDiv";
     }
     else {
-        result.innerHTML = "<span class='resultLoss'> You did not catch enough materials for a vaccine</span>"
+        result.innerHTML = "<span class='resultLoss'> You did not catch enough materials for a vaccine.</span>"
         endScreenDiv.className = "lossDiv";
     }
         result.style.width = "100%"; 
