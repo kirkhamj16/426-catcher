@@ -189,7 +189,7 @@ class Score {
             this.element.style["margin-top"] = "-40px"
             this.element.style.left = "50%"
             this.element.style.top = "50%"
-            // createEndScreen();   // uncomment this line to create my end screen
+            createEndScreen();   // uncomment this line to create my end screen
             endScreenCreated = true;
         }
         // this.element.innerText = newScore;
@@ -358,6 +358,9 @@ initOimoPhysics();
 const onAnimationFrameHandler = (timeStamp) => {
     window.requestAnimationFrame(onAnimationFrameHandler);
     if (gameStarted && !gameEnd) {
+        document.getElementById("start").style.display = "none";
+        document.getElementById("virusImage").style.display = "none";
+
         canvas.style.display = "block";
         controls.update();
         camera.update(meshs[0].position);
@@ -970,7 +973,8 @@ function createOpeningScreen() {
     // document.write("Catch the blue particles to build toward a COVID-19 vaccine while avoiding the virus particles.")
 
     var start = document.createElement("DIV");
-    start.innerHTML = "Catch the blue particles to build toward a COVID-19 vaccine while avoiding the virus particles. Collect the PPE Masks to protect yourself from the virus.";
+    // start.innerHTML = "Catch the blue particles to build toward a COVID-19 vaccine while avoiding the virus particles. Collect the PPE Masks to protect yourself from the virus.";
+    start.innerHTML = "Catch five or more of the blue particles to build toward a COVID-19 vaccine while avoiding the virus particles. Collect the PPE Masks to protect yourself from the virus.";
     start.style.display = 'block';
     start.style['float'] = "center";
     start.style['font-size'] = "xx-large";
@@ -986,6 +990,7 @@ function createOpeningScreen() {
     start.style['height'] = "150px";
     start.style['opacity'] = "0.5";
     start.style['z-index'] = "1";
+    start.id = "start";
     document.body.appendChild(start);
 
     var start1 = document.createElement("DIV");
@@ -1014,6 +1019,8 @@ function createOpeningScreen() {
     virus.style['opacity'] = "0.5";
     virus.style['margin-left'] = "-940px";
     virus.style['margin-top'] = "-100px";
+    virus.id = "virusImage";
+
     document.body.appendChild(virus);
 
 
@@ -1098,7 +1105,7 @@ function createEndScreen() {
     let endScreenDiv = document.createElement("DIV");
     endScreenDiv.style.position = "relative";
     endScreenDiv.className = "endScreen";
-    endScreenDiv.style.top = "5%";
+    endScreenDiv.style.top = "20%";
     // endScreenDiv.style['border-radius'] = "20px";
     endScreenDiv.style['display'] = "inline-block";
     endScreenDiv.style.top = "10%";
