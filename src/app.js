@@ -983,7 +983,7 @@ function createOpeningScreen() {
 
     var start = document.createElement("DIV");
     // start.innerHTML = "Catch the blue particles to build toward a COVID-19 vaccine while avoiding the virus particles. Collect the PPE Masks to protect yourself from the virus.";
-    start.innerHTML = "Catch five or more of the blue particles to build toward a COVID-19 vaccine while avoiding the virus particles. Collect the PPE Masks to protect yourself from the virus.";
+    start.innerHTML = "Catch five or more blue vaccine particles to build a COVID-19 vaccine, but be careful to avoid the virus particles! Collect the PPE Masks to protect yourself from the virus.";
     start.style.display = 'block';
     start.style['float'] = "center";
     start.style['font-size'] = "xx-large";
@@ -1003,7 +1003,7 @@ function createOpeningScreen() {
     document.body.appendChild(start);
 
     var start1 = document.createElement("DIV");
-    start1.innerHTML = "Move with WASD. <br></br>Press the space bar to start";
+    start1.innerHTML = "Move with WASD. <br></br> Tip: Use the shadows to find where a particle will fall, then catch it off the bounce! <br></br>Press the space bar to start";
     start1.style.display = 'block';
     start1.id = 'start1'
     start1.style['float'] = "center";
