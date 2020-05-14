@@ -334,7 +334,7 @@ mats['cyl']    = new THREE[materialType]( {shininess: 10, map: basicTexture(4), 
 mats['ssph']   = new THREE[materialType]( {shininess: 10, map: basicTexture(1), name:'ssph' } );
 mats['sbox']   = new THREE[materialType]( {shininess: 10, map: basicTexture(3), name:'sbox' } );
 mats['scyl']   = new THREE[materialType]( {shininess: 10, map: basicTexture(5), name:'scyl' } );
-mats['ground'] = new THREE[materialType]( {shininess: 100, color:0x3D4143, transparent:true, opacity:0.3 } );
+mats['ground'] = new THREE[materialType]( {shininess: 100000, color:0xffffff, transparent:true, opacity:0.3 } );
 mats['beaker'] = new THREE[materialType]( {shininess: 1000, color: 0xC2C2C2, transparent:true, opacity:0.5} );
 mats['wall'] = new THREE[materialType]( {shininess: 10, color:0x0000c2, transparent:true, opacity:0.7 } );
 
@@ -1001,7 +1001,7 @@ function createOpeningScreen() {
         startScreenDiv.appendChild(instructionContainer);
 
             let instructions = document.createElement("DIV");
-            instructions.innerHTML = "Catch the PPE equipment and vaccine materials while avoiding the virus particles!</br>Press the space bar to start the game!";
+            instructions.innerHTML = "Catch the PPE equipment and vaccine materials while avoiding the virus particles!</br> Move with WASD. </br> Catch the blue vaccine particles and avoid the green virus particles. If you catch a falling mask, you become immune to the virus! </br> Watch the shadows to see falling objects. </br>Press the space bar to start the game!";
             instructions.style['font-size'] = "20px"; 
             instructions.style.width = "100%"; 
             instructions.style['text-align'] = "center";
