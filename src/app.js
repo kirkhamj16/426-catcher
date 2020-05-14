@@ -45,6 +45,8 @@ var fps = [0,0,0,0];
 var ToRad = 0.0174532925199432957;
 var type = 1;
 var infos;
+var gameEnd = false;
+var time = 45;
 
 // temp color fixes
 var blue = new THREE.MeshStandardMaterial({color: 0x0000FF});
@@ -105,6 +107,7 @@ function startGame() {
         // show score
         if (count == 0) {
             currScore.showScore();
+            currTimer.showTime();
             $(".dg.main.a").show();
         }
         count = 1;
@@ -210,6 +213,12 @@ class Score {
                 child.innerText = "SCORE: ".concat(newScore);
             }
         }
+        if (gameEnd) {
+            this.element.style["margin-left"] = "-250px"
+            this.element.style["margin-top"] = "-40px"
+            this.element.style.left = "50%"
+            this.element.style.top = "50%"
+        }
         // this.element.innerText = newScore;
         // let score = document.getElementById("score");
         // score.innerText="0";
@@ -218,8 +227,88 @@ class Score {
 
 
 var currScore = new Score(0);
+
 var winning_points = 0;
 var losing_points = 0;
+
+
+class Timer {
+    constructor(fullTime) {
+            this.element = document.createElement("DIV");
+            this.element.style.width = "500px"; 
+            this.element.style.height = "100px"; 
+            this.element.style.position = "absolute"; 
+            this.element.style.top = "5%"; 
+            this.element.style.left = "50%"; 
+            this.element.style['margin-left'] = "-250px";
+            // this.element.style.transform = "translate(-2500%, -50%)"; 
+            this.element.style['align-items'] = "flex-end"; 
+            this.element.style['vertical-align'] = "middle";
+            //this.element.style['background-color'] = "#5dbcd2"; 
+            //this.element.style.border = "1px solid #000000"; 
+
+            this.element.style['text-align'] = "center";
+            this.element.style.display = "none"; 
+            this.id = "scoreContainer";
+
+            let time = document.createElement("DIV");
+            time.id = "time";
+            time.style['z-index'] = "3";
+            //time.style['background-color']="#5dbcd2"
+            time.style['text-align'] = "center";
+            time.style['vertical-align'] = "middle";
+            time.style['align-items'] = "center";
+            time.style.height = "100px";
+            time.style.width = "500px";
+            time.style['color'] = "#FFFFFF";
+            time.style['font-family'] = 'Arial Black';
+            time.style['font-size'] = "100px";
+            // time.style.width = "20";
+            // time.style.height = "20";
+
+            this.element.appendChild(time);
+
+
+
+            document.body.appendChild(this.element);
+
+
+    }
+    showTime() {
+        this.element.style.display = "block";
+        this.element.style['z-index'] = "6"
+
+        // for some reason need to access element's children have changes be reflected
+        let children = this.element.children;
+        for (let child of children) {
+            if (child.id == "time") {
+                child.innerText = "5";
+            }
+        }
+        setTimeout(countdown, 100)
+    }
+      
+}
+
+        // adapted from coloring https://github.com/beckybarber18/coloring/blob/master/js/game.js   
+function countdown() {
+    $('#counter').show();
+    let seconds = time;
+    tick();
+
+    function tick() {
+        var counter = document.getElementById("time");
+        seconds--;
+        counter.innerHTML = (seconds < 10 ? "0" : "") + String(seconds);
+        if( seconds > 0 ) {
+            setTimeout(tick, 1000);
+        } else {
+            counter.style.display = "none";
+            gameEnd = true;
+        }
+    }
+} 
+var currTimer = new Timer(45);
 
 //-----------------------------------------------------------------------
 // DEFINITION OF OMIOS PRIMITIVES -- built off oimo docs
@@ -294,7 +383,7 @@ initOimoPhysics();
 // Render loop
 const onAnimationFrameHandler = (timeStamp) => {
     window.requestAnimationFrame(onAnimationFrameHandler);
-    if (gameStarted) {
+    if (gameStarted && !gameEnd) {
         canvas.style.display = "block";
         controls.update();
         camera.update(meshs[0].position);
@@ -305,8 +394,8 @@ const onAnimationFrameHandler = (timeStamp) => {
         currScore.updateScore(winning_points-losing_points);
     }   
     else {
+        currScore.updateScore(winning_points-losing_points);
         canvas.style.display = "none";
-
 
     }
 };
@@ -856,6 +945,9 @@ function updateScore() {
 
 
 
+
+
+
 //----------------------------------
 //  SCREENS
 //----------------------------------
@@ -923,11 +1015,11 @@ function createOpeningScreen() {
          
 
     // place parameter bar in proper position
-    let params = document.getElementsByClassName("dg ac");
-    let param = params[0];
-    param.parentNode.removeChild(param);
-    allContainer.appendChild(param);
-    param.style['z-index'] = "2";
+    //let params = document.getElementsByClassName("dg ac");
+    //let param = params[0];
+    //param.parentNode.removeChild(param);
+    //allContainer.appendChild(param);
+    //param.style['z-index'] = "2";
 
 
    
