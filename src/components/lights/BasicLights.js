@@ -6,7 +6,7 @@ class BasicLights extends Group {
         super(...args);
 
 
-        const dir = new SpotLight(0xabbcff, .7, 500, 1, 0, 0);
+        const dir = new SpotLight(0xabbcff, .7, 800, 1, 0, 0);
         const direct = new DirectionalLight(0xffffff, .7);
         const direct2 = new DirectionalLight(0xffffff, 0.5);
 

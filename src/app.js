@@ -1002,7 +1002,7 @@ function createOpeningScreen() {
     document.body.appendChild(start);
 
     var start1 = document.createElement("DIV");
-    start1.innerHTML = "Press the space bar to start";
+    start1.innerHTML = "Move with WASD. <br></br>Press the space bar to start";
     start1.style.display = 'block';
     start1.id = 'start1'
     start1.style['float'] = "center";
