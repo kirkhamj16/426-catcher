@@ -362,7 +362,7 @@ function initOimoPhysics(){
     worldscale: 1, // scale full world 
     random: true,  // randomize sample
     info: false,   // calculate statistic or not
-    gravity: [0,-3,0] });
+    gravity: [0,-20,0] });
     initbucketGeometry();
     let x, y, z, w, h, d;
 
@@ -412,9 +412,13 @@ function initOimoPhysics(){
     var ground0 = world.add({size:[40, 40, 790], pos:[-380,0,0], rot:[0,0,-45], world:world});
     var ground1 = world.add({size:[40, 40, 790], pos:[380,0,0], rot:[0,0,45], world:world});
     var ground2 = world.add({size:[800, 80, 800], pos:[0,-40,0], world:world});
+    var wall2 = world.add({size:[80, 40, 790], pos:[-390,70,0], rot:[0,0,75], world:world});
+    var wall3 = world.add({size:[80, 40, 790], pos:[390,70,0], rot:[0,0,-75], world:world});
 
     addWall([40, 40, 790], [-380,0,0], [0,0,-45]);
     addWall([40, 40, 790], [380,0,0], [0,0,45]);
+    addWall([80, 40, 790], [-390,70,0], [0,0,75]);
+    addWall([80, 40, 790], [390,70,0], [0,0,-75]);
     addStaticBox([800, 80, 800], [0,-40,0], [0,0,0]);
 
     // ground test 
@@ -468,7 +472,7 @@ function populate(n) {
         if(t===1){
             var random = Math.random();
             let model_scale = 1;
-            if (random < 0.5) {
+            if (random < 0.1) {
                 var mat = blue;
                 var geo = geos.sphere
             }
