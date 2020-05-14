@@ -5,8 +5,8 @@ class BasicLights extends Group {
         // Invoke parent Group() constructor with our args
         super(...args);
 
-        const dir = new SpotLight(0xabbcff, 0.5, 500, 1, 0, 0);
-        const direct = new DirectionalLight(0xffffff, 0.7);
+        const dir = new SpotLight(0xabbcff, .7, 500, 1, 0, 0);
+        const direct = new DirectionalLight(0xffffff, .7);
         direct.position.set(0, 400, 0);
         direct.castShadow = true;
      

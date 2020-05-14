@@ -47,11 +47,11 @@ var type = 1;
 var infos;
 
 // temp color fixes
-var blue = new THREE.MeshLambertMaterial({color: 0x0000FF});
+var blue = new THREE.MeshStandardMaterial({color: 0x0000FF});
 blue.color = new THREE.Color(0x0000FF);
-var teal = new THREE.MeshLambertMaterial({color: 0x00c4c4});
+var teal = new THREE.MeshStandardMaterial({color: 0x00c4c4});
 teal.color = new THREE.Color(0x00c4c4);
-var green = new THREE.MeshLambertMaterial({color: 0x7bc059});
+var green = new THREE.MeshStandardMaterial({color: 0x7bc059});
 green.color = new THREE.Color(0x7bc059);
 
 
@@ -225,7 +225,7 @@ var mats = {};
 var types, sizes, positions, bucketGeometry;
 var geoBox = new THREE.BoxGeometry(1,1,1);
 var geoCyl = new THREE.CylinderGeometry( 0.5, 0.5, 1, 6, 1 );
-var materialType = 'MeshPhongMaterial';
+var materialType = 'MeshStandardMaterial';
 
 
 // geometrys
@@ -241,7 +241,7 @@ mats['cyl']    = new THREE[materialType]( {shininess: 10, map: basicTexture(4), 
 mats['ssph']   = new THREE[materialType]( {shininess: 10, map: basicTexture(1), name:'ssph' } );
 mats['sbox']   = new THREE[materialType]( {shininess: 10, map: basicTexture(3), name:'sbox' } );
 mats['scyl']   = new THREE[materialType]( {shininess: 10, map: basicTexture(5), name:'scyl' } );
-mats['ground'] = new THREE[materialType]( {shininess: 10, color:0x3D4143, transparent:true, opacity:0.5 } );
+mats['ground'] = new THREE[materialType]( {shininess: 100, color:0x3D4143, transparent:true, opacity:0.3 } );
 mats['beaker'] = new THREE[materialType]( {shininess: 1000, color: 0xC2C2C2, transparent:true, opacity:0.5} );
 mats['wall'] = new THREE[materialType]( {shininess: 10, color:0x0000c2, transparent:true, opacity:0.7 } );
 
@@ -426,11 +426,15 @@ function initOimoPhysics(){
     var ground2 = world.add({size:[800, 80, 800], pos:[0,-40,0], world:world});
     var wall2 = world.add({size:[80, 40, 790], pos:[-390,70,0], rot:[0,0,75], world:world});
     var wall3 = world.add({size:[80, 40, 790], pos:[390,70,0], rot:[0,0,-75], world:world});
+    var wall4 = world.add({size:[790, 20, 40], pos:[0,0,390], rot:[0,0,0], world:world});
+    var wall5 = world.add({size:[790, 20, 40], pos:[0,0,-390], rot:[0,0,0], world:world});
 
     addWall([40, 40, 790], [-380,0,0], [0,0,-45]);
     addWall([40, 40, 790], [380,0,0], [0,0,45]);
     addWall([80, 40, 790], [-390,70,0], [0,0,75]);
     addWall([80, 40, 790], [390,70,0], [0,0,-75]);
+    addWall([790, 20, 40], [0,0,390], [0,0,0]);
+    addWall([790, 20, 40], [0,0,-390], [0,0,0]);
     addStaticBox([800, 80, 800], [0,-40,0], [0,0,0]);
 
     // ground test 
