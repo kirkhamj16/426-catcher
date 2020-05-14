@@ -443,13 +443,13 @@ function initOimoPhysics() {
     // 3 : dynamic bounding volume tree
     var group1 = 1 << 0;  // 00000000 00000000 00000000 00000001
     world = new OIMO.World({
-        timestep: 1 / 120,
-        iterations: 8,
-        broadphase: 2, // 1 brute force, 2 sweep and prune, 3 volume tree
+        timestep: 1 / 60,
+        iterations: 4,
+        broadphase: 3, // 1 brute force, 2 sweep and prune, 3 volume tree
         worldscale: 1, // scale full world 
         random: true,  // randomize sample
         info: false,   // calculate statistic or not
-        gravity: [0, -50, 0]
+        gravity: [0, -25, 0]
     });
     initbucketGeometry();
     let x, y, z, w, h, d;
