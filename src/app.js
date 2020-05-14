@@ -532,7 +532,7 @@ function initOimoPhysics() {
 // adapted from oimo example
 function populate(n) {
     var type;
-    var max = 500;
+    var max = 250;
     if (n === 1) type = 1
     else if (n === 2) type = 2;
     else if (n === 3) type = 3;
@@ -559,7 +559,7 @@ function populate(n) {
         else t = type;
         x = -400 + Math.random() * 800;
         z = -400 + Math.random() * 800;
-        y = 250 + Math.random() * 2700;
+        y = 250 + Math.random() * 4000;
 
         w = 10 + Math.random() * 10;
         h = 10 + Math.random() * 10;
