@@ -996,11 +996,12 @@ function createOpeningScreen() {
     start.style['left'] = "50%";
     start.style['width'] = "600px";
     start.style['margin-left'] = "-290px";
-    start.style['margin-top'] = "150px";
+    start.style['margin-top'] = "100px";
     start.style['height'] = "150px";
     start.style['opacity'] = "0.5";
     start.style['z-index'] = "1";
     start.id = "start";
+    start.className = "titleScreen"
     document.body.appendChild(start);
 
     var start1 = document.createElement("DIV");
@@ -1017,10 +1018,11 @@ function createOpeningScreen() {
     start1.style['left'] = "50%";
     start1.style['width'] = "500px";
     start1.style['margin-left'] = "-240px";
-    start1.style['margin-top'] = "400px";
+    start1.style['margin-top'] = "350px";
     start1.style['height'] = "150px";
     start1.style['opacity'] = "0.5";
     start1.style['z-index'] = "1";
+    start1.className = "titleScreen";
     document.body.appendChild(start1);
 
     var virus = document.createElement("img");
@@ -1031,6 +1033,7 @@ function createOpeningScreen() {
     virus.style['margin-left'] = "-940px";
     virus.style['margin-top'] = "-100px";
     virus.id = "virusImage";
+    virus.className = "titleScreen";
 
     document.body.appendChild(virus);
 
@@ -1118,13 +1121,20 @@ function createEndScreen() {
     endScreenDiv.style.position = "relative";
     endScreenDiv.className = "endScreen";
     endScreenDiv.style.top = "20%";
-    // endScreenDiv.style['border-radius'] = "20px";
+    endScreenDiv.style['margin'] = "20px";
     endScreenDiv.style['display'] = "inline-block";
+    // endScreenDiv.style['display'] = "absolute";
     endScreenDiv.style.top = "10%";
     endScreenDiv.style['flex-wrap'] = "wrap";
     endScreenDiv.style['text-align'] = "center";
     endScreenDiv.style['padding'] = "20px";
+    endScreenDiv.style['width'] = "fit-content";
+    endScreenDiv.style['height'] = "fit-content";
+    // endScreenDiv.style['left'] = "50%";
+    // endScreenDiv.style['margin-left'] = "-50px";
     endScreenDiv.className = "endScreenDiv";
+
+
 
     let result = document.createElement("DIV");
     if (won) {
@@ -1144,15 +1154,6 @@ function createEndScreen() {
         result.id = "result";
         endScreenDiv.appendChild(result);
 
-    let scoreContainer = document.getElementById("scoreContainer");
-    scoreContainer.appendChild(endScreenDiv);
-    console.log(scoreContainer)
-  
-
     document.body.appendChild(endScreenDiv);
-
-    let score = document.getElementById("score");
-    score.innerText += "hi";
-    console.log(score.innerText)
 
 }
