@@ -412,6 +412,7 @@ const keyDownHandler = (e) => {
         movingRight = true;
     } else if (e.keyCode == "32" && gameStarted == false) {
         startGame();
+        e.preventDefault();
     }
 }
 const keyUpHandler = (e) => {
