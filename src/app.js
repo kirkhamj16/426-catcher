@@ -60,6 +60,7 @@ const canvas = renderer.domElement;
 const controls = new OrbitControls(camera, canvas);
 
 var gameStarted = false;
+var endScreenCreated = false;
 
 
 
@@ -132,6 +133,7 @@ class Score {
         //this.element.style.transform = "translate(-2500%, -50%)"; 
         this.element.style['align-items'] = "flex-end";
         this.element.style['vertical-align'] = "middle";
+        this.element.id = "scoreContainer"
         //this.element.style['background-color'] = "#5dbcd2"; 
         //this.element.style.border = "1px solid #000000"; 
 
@@ -174,35 +176,6 @@ class Score {
             }
         }
 
-        let beaker = document.createElement("DIV");
-        beaker.style.width = "300px";
-        // beaker.style.height = "150px"; 
-        beaker.style.position = "absolute";
-        beaker.style.top = "50%";
-        beaker.style.left = "50%";
-        beaker.transform = "translate(-5000%, -50%)";
-        // beaker.style['align-items'] = "flex-end"; 
-        // beaker.style['background-color'] = "#5dbcd2"; 
-        // beaker.style.border = "1px solid #ffffff"; 
-
-        beaker.style['text-align'] = "center";
-        beaker.style.display = "none";
-        beaker.style['z-index'] = "4";
-        beaker.style.height = "100%"
-        beaker.classList.add("beaker");
-        let glass = document.createElement("DIV");
-        glass.classList.add("glass");
-        glass.style.height = "100%"
-        glass.style['z-index'] = "3";
-        beaker.appendChild(glass);
-        let water = document.createElement("DIV");
-        water.style.height = "100%"
-        water.classList.add("water");
-        water.style['z-index'] = "2";
-        glass.appendChild(water);
-
-        this.element.appendChild(beaker);
-
     }
     updateScore(newScore) {
         let children = this.element.children;
@@ -211,11 +184,13 @@ class Score {
                 child.innerText = "SCORE: ".concat(newScore);
             }
         }
-        if (gameEnd) {
+        if (gameEnd && !endScreenCreated) {
             this.element.style["margin-left"] = "-250px"
             this.element.style["margin-top"] = "-40px"
             this.element.style.left = "50%"
             this.element.style.top = "50%"
+            createEndScreen();   // uncomment this line to create my end screen
+            endScreenCreated = true;
         }
         // this.element.innerText = newScore;
         // let score = document.getElementById("score");
@@ -228,6 +203,7 @@ var currScore = new Score(0);
 
 var winning_points = 0;
 var losing_points = 0;
+var minPoints = 5; // min points to win
 
 
 class Timer {
@@ -382,6 +358,9 @@ initOimoPhysics();
 const onAnimationFrameHandler = (timeStamp) => {
     window.requestAnimationFrame(onAnimationFrameHandler);
     if (gameStarted && !gameEnd) {
+        document.getElementById("start").style.display = "none";
+        document.getElementById("virusImage").style.display = "none";
+
         canvas.style.display = "block";
         controls.update();
         camera.update(meshs[0].position);
@@ -389,7 +368,9 @@ const onAnimationFrameHandler = (timeStamp) => {
         handleCollisions();
         renderer.render(scene, camera);
         scene.update && scene.update(timeStamp);
-        currScore.updateScore(winning_points - losing_points);
+        if (!endScreenCreated) {
+            currScore.updateScore(winning_points-losing_points);
+        }
     }
     else {
         currScore.updateScore(winning_points - losing_points);
@@ -992,7 +973,8 @@ function createOpeningScreen() {
     // document.write("Catch the blue particles to build toward a COVID-19 vaccine while avoiding the virus particles.")
 
     var start = document.createElement("DIV");
-    start.innerHTML = "Catch the blue particles to build toward a COVID-19 vaccine while avoiding the virus particles. Collect the PPE Masks to protect yourself from the virus.";
+    // start.innerHTML = "Catch the blue particles to build toward a COVID-19 vaccine while avoiding the virus particles. Collect the PPE Masks to protect yourself from the virus.";
+    start.innerHTML = "Catch five or more of the blue particles to build toward a COVID-19 vaccine while avoiding the virus particles. Collect the PPE Masks to protect yourself from the virus.";
     start.style.display = 'block';
     start.style['float'] = "center";
     start.style['font-size'] = "xx-large";
@@ -1008,6 +990,7 @@ function createOpeningScreen() {
     start.style['height'] = "150px";
     start.style['opacity'] = "0.5";
     start.style['z-index'] = "1";
+    start.id = "start";
     document.body.appendChild(start);
 
     var start1 = document.createElement("DIV");
@@ -1036,6 +1019,8 @@ function createOpeningScreen() {
     virus.style['opacity'] = "0.5";
     virus.style['margin-left'] = "-940px";
     virus.style['margin-top'] = "-100px";
+    virus.id = "virusImage";
+
     document.body.appendChild(virus);
 
 
@@ -1056,14 +1041,13 @@ function createOpeningScreen() {
     // instructionContainer.style['flex-wrap'] = "wrap";
     // instructionContainer.style['background-color'] = "ffffff";
     // instructionContainer.style['text-align'] = "center";
-    // instructionContainer.style['padding'] = "30px";
+    // instructionContainer.style['padding'] = "10px";
     // instructionContainer.style['background-color'] = "#9EC1A3";
     // instructionContainer.className = "titleScreen";
     // startScreenDiv.appendChild(instructionContainer);
 
     // let instructions = document.createElement("DIV");
-    // instructions.innerHTML = "Catch the PPE equipment and vaccine materials while avoiding the virus particles!</br>Press the space bar to start the game!";
-    // instructions.style['font-size'] = "20px";
+    // instructions.innerHTML = "Catch 5 or more <span class='vaccineLetters'> vaccine materials </span> to build the vaccine!</br></br>Make sure to avoid the <span class='virusLetters'>virus particles!</span></br></br><span class='maskLetters'>Masks</span> provide immunity to the virus.</br></br>You have 45 seconds! Good luck!</br></br><p class='startInstructions'>Press the <span class='spaceBarLetters'>space bar</span> to start the game!</p>";    // instructions.style['font-size'] = "20px";
     // instructions.style.width = "100%";
     // instructions.style['text-align'] = "center";
     // instructions.style['color'] = "#8075FF";
@@ -1108,3 +1092,55 @@ function createOpeningScreen() {
 
 }
 
+
+// Create end screen
+function createEndScreen() {
+    document.getElementById("allContainer").style.display = "none";
+    let won = true;
+    if (winning_points-losing_points < minPoints) {
+        won = false;
+    }
+
+    // create end screen
+    let endScreenDiv = document.createElement("DIV");
+    endScreenDiv.style.position = "relative";
+    endScreenDiv.className = "endScreen";
+    endScreenDiv.style.top = "20%";
+    // endScreenDiv.style['border-radius'] = "20px";
+    endScreenDiv.style['display'] = "inline-block";
+    endScreenDiv.style.top = "10%";
+    endScreenDiv.style['flex-wrap'] = "wrap";
+    endScreenDiv.style['text-align'] = "center";
+    endScreenDiv.style['padding'] = "20px";
+    endScreenDiv.className = "endScreenDiv";
+
+    let result = document.createElement("DIV");
+    if (won) {
+            result.innerHTML = "<span class='resultWin'>Congratulations! You have created a vaccine!</span>";
+            endScreenDiv.className = "winDiv";
+    }
+    else {
+        result.innerHTML = "<span class='resultLoss'> You did not catch enough materials for a vaccine</span>"
+        endScreenDiv.className = "lossDiv";
+    }
+        result.style.width = "100%"; 
+        result.style['text-align'] = "center";
+        result.style['color'] = "#000000";
+        result.style['padding'] = "10px";
+        result.id = "result";
+
+        result.id = "result";
+        endScreenDiv.appendChild(result);
+
+    let scoreContainer = document.getElementById("scoreContainer");
+    scoreContainer.appendChild(endScreenDiv);
+    console.log(scoreContainer)
+  
+
+    document.body.appendChild(endScreenDiv);
+
+    let score = document.getElementById("score");
+    score.innerText += "hi";
+    console.log(score.innerText)
+
+}
