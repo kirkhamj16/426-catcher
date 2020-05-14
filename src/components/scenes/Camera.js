@@ -10,9 +10,9 @@ class Cam extends PerspectiveCamera {
 		this.lookAt(new Vector3(0,0,0)); // Set look at coordinate like this
 	}
 	update(playerPos) {
-        //this.position.x = playerPos.x;
-        //this.position.z = playerPos.z + 200
-        //this.lookAt(playerPos)
+        this.position.x = playerPos.x;
+        this.position.z = playerPos.z + 200
+        this.lookAt(playerPos)
     }
 }
 

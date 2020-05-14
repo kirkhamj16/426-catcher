@@ -27,7 +27,7 @@
     border-radius: 10px;
     width: 300px;
     height: 400px;
-    position: relative;
+    position: absolute;
 }
 .water {
     background-color: #9cc6ff;   
@@ -53,4 +53,8 @@
     -moz-transition: all 3s ease-out;
     -o-transition: all 3s ease-out;
     transition: all 3s ease-out;
+}
+.score {
+    font-family:'Courier New';
+    color:red;
 }
