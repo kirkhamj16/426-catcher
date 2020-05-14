@@ -12,11 +12,10 @@ import { SeedScene, Cam } from 'scenes';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import VIRUS from '../models/virus/virus.obj';
 import TUBES3 from '../images/tubes3.jpg';
-import TUBES1 from '../images/tubes1.png';
-import TUBES2 from '../images/tubes2.png';
-import TUBES4 from '../images/tubes4.png';
-import TUBES5 from '../images/tubes5.png';
+import BACK from '../src/textures/back.png';
 import MASK from '../models/mask/mask.obj';
+import VIRUS_IMG from '../virus.png';
+import MASK_IMG from '../mask.png';
 // import Score from "/../src/Score.js"
 
 const OIMO = require('oimo');
@@ -41,7 +40,7 @@ var grounds = [];
 var isMobile = false;
 var antialias = true;
 
-var fps = [0,0,0,0];
+var fps = [0, 0, 0, 0];
 var ToRad = 0.0174532925199432957;
 var type = 1;
 var infos;
@@ -49,16 +48,16 @@ var gameEnd = false;
 var time = 45;
 
 // temp color fixes
-var blue = new THREE.MeshStandardMaterial({color: 0x0000FF});
+var blue = new THREE.MeshStandardMaterial({ color: 0x0000FF });
 blue.color = new THREE.Color(0x0000FF);
-var teal = new THREE.MeshStandardMaterial({color: 0x00c4c4});
+var teal = new THREE.MeshStandardMaterial({ color: 0x00c4c4 });
 teal.color = new THREE.Color(0x00c4c4);
-var green = new THREE.MeshStandardMaterial({color: 0x7bc059});
+var green = new THREE.MeshStandardMaterial({ color: 0x7bc059 });
 green.color = new THREE.Color(0x7bc059);
 
 
 const canvas = renderer.domElement;
-const controls = new OrbitControls( camera, canvas );
+const controls = new OrbitControls(camera, canvas);
 
 var gameStarted = false;
 
@@ -68,34 +67,34 @@ var gameStarted = false;
 // add JQUERY!
 injectScriptAndUse();
 function injectScriptAndUse() {
-  var head = document.getElementsByTagName("head")[0];
-  var script = document.createElement("script");
-  script.src = "//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js";
-  script.onload = function() {
-    // hide the parameter bar initially
-    $(".dg.main.a").attr("id", "parameters");
-    $(".dg.main.a").hide();
+    var head = document.getElementsByTagName("head")[0];
+    var script = document.createElement("script");
+    script.src = "//ajax.googleapis.com/ajax/libs/jquery/1.11.1/jquery.min.js";
+    script.onload = function () {
+        // hide the parameter bar initially
+        $(".dg.main.a").attr("id", "parameters");
+        $(".dg.main.a").hide();
 
-  };
-  head.appendChild(script);
+    };
+    head.appendChild(script);
 }
 
 // add CSS
 injectCSS();
 function injectCSS() {
-  var head = document.getElementsByTagName("head")[0];
-  var link = document.createElement("link");
-  link.href = "/src/style.css";
-  link.type="text/css";
-  link.rel="stylesheet";
-  head.appendChild(link);
+    var head = document.getElementsByTagName("head")[0];
+    var link = document.createElement("link");
+    link.href = "/src/style.css";
+    link.type = "text/css";
+    link.rel = "stylesheet";
+    head.appendChild(link);
 }
 
 
 function startGame() {
     let count = 0;
     // fade out the title and instructions
-    $(".titleScreen").fadeOut('slow', function() {
+    $(".titleScreen").fadeOut('slow', function () {
         // Set up controls
         controls.update();
         controls.enableDamping = true;
@@ -112,11 +111,11 @@ function startGame() {
         }
         count = 1;
 
-        gameStarted = true; 
+        gameStarted = true;
 
     });
 
-    
+
 }
 
 
@@ -124,42 +123,42 @@ function startGame() {
 // move to diff file to modularize
 class Score {
     constructor(initialscore) {
-            this.element = document.createElement("DIV");
-            this.element.style.width = "500px"; 
-            this.element.style.height = "80px"; 
-            this.element.style.position = "absolute"; 
-            this.element.style.top = "5%"; 
-            this.element.style.left = "5%"; 
-            //this.element.style.transform = "translate(-2500%, -50%)"; 
-            this.element.style['align-items'] = "flex-end"; 
-            this.element.style['vertical-align'] = "middle";
-            //this.element.style['background-color'] = "#5dbcd2"; 
-            //this.element.style.border = "1px solid #000000"; 
+        this.element = document.createElement("DIV");
+        this.element.style.width = "500px";
+        this.element.style.height = "80px";
+        this.element.style.position = "absolute";
+        this.element.style.top = "5%";
+        this.element.style.left = "5%";
+        //this.element.style.transform = "translate(-2500%, -50%)"; 
+        this.element.style['align-items'] = "flex-end";
+        this.element.style['vertical-align'] = "middle";
+        //this.element.style['background-color'] = "#5dbcd2"; 
+        //this.element.style.border = "1px solid #000000"; 
 
-            this.element.style['text-align'] = "center";
-            this.element.style.display = "none"; 
-            this.id = "scoreContainer";
+        this.element.style['text-align'] = "center";
+        this.element.style.display = "none";
+        this.id = "scoreContainer";
 
-            let score = document.createElement("DIV");
-            score.id = "score";
-            score.style['z-index'] = "3";
-            //score.style['background-color']="#5dbcd2"
-            score.style['text-align'] = "center";
-            score.style['vertical-align'] = "middle";
-            score.style['align-items'] = "center";
-            score.style.height = "80px";
-            score.style.width = "500px";
-            score.style['color'] = "#000000";
-            score.style['font-family'] = 'Arial Black';
-            score.style['font-size'] = "60px";
-            // score.style.width = "20";
-            // score.style.height = "20";
+        let score = document.createElement("DIV");
+        score.id = "score";
+        score.style['z-index'] = "3";
+        //score.style['background-color']="#5dbcd2"
+        score.style['text-align'] = "center";
+        score.style['vertical-align'] = "middle";
+        score.style['align-items'] = "center";
+        score.style.height = "80px";
+        score.style.width = "500px";
+        score.style['color'] = "#000000";
+        score.style['font-family'] = 'Arial Black';
+        score.style['font-size'] = "60px";
+        // score.style.width = "20";
+        // score.style.height = "20";
 
-            this.element.appendChild(score);
+        this.element.appendChild(score);
 
 
 
-            document.body.appendChild(this.element);
+        document.body.appendChild(this.element);
 
 
     }
@@ -176,35 +175,35 @@ class Score {
         }
 
         let beaker = document.createElement("DIV");
-        beaker.style.width = "300px"; 
+        beaker.style.width = "300px";
         // beaker.style.height = "150px"; 
-        beaker.style.position = "absolute"; 
-        beaker.style.top = "50%"; 
-        beaker.style.left = "50%"; 
-        beaker.transform = "translate(-5000%, -50%)"; 
+        beaker.style.position = "absolute";
+        beaker.style.top = "50%";
+        beaker.style.left = "50%";
+        beaker.transform = "translate(-5000%, -50%)";
         // beaker.style['align-items'] = "flex-end"; 
         // beaker.style['background-color'] = "#5dbcd2"; 
         // beaker.style.border = "1px solid #ffffff"; 
 
         beaker.style['text-align'] = "center";
-        beaker.style.display = "none"; 
+        beaker.style.display = "none";
         beaker.style['z-index'] = "4";
-        beaker.style.height="100%"
+        beaker.style.height = "100%"
         beaker.classList.add("beaker");
         let glass = document.createElement("DIV");
         glass.classList.add("glass");
-        glass.style.height="100%"
+        glass.style.height = "100%"
         glass.style['z-index'] = "3";
         beaker.appendChild(glass);
         let water = document.createElement("DIV");
-        water.style.height="100%"
+        water.style.height = "100%"
         water.classList.add("water");
         water.style['z-index'] = "2";
         glass.appendChild(water);
 
         this.element.appendChild(beaker);
 
-       
+
     }
     updateScore(newScore) {
         let children = this.element.children;
@@ -223,7 +222,7 @@ class Score {
         // let score = document.getElementById("score");
         // score.innerText="0";
     }
-}    
+}
 
 
 var currScore = new Score(0);
@@ -234,43 +233,43 @@ var losing_points = 0;
 
 class Timer {
     constructor(fullTime) {
-            this.element = document.createElement("DIV");
-            this.element.style.width = "500px"; 
-            this.element.style.height = "100px"; 
-            this.element.style.position = "absolute"; 
-            this.element.style.top = "5%"; 
-            this.element.style.left = "50%"; 
-            this.element.style['margin-left'] = "-250px";
-            // this.element.style.transform = "translate(-2500%, -50%)"; 
-            this.element.style['align-items'] = "flex-end"; 
-            this.element.style['vertical-align'] = "middle";
-            //this.element.style['background-color'] = "#5dbcd2"; 
-            //this.element.style.border = "1px solid #000000"; 
+        this.element = document.createElement("DIV");
+        this.element.style.width = "500px";
+        this.element.style.height = "100px";
+        this.element.style.position = "absolute";
+        this.element.style.top = "5%";
+        this.element.style.left = "50%";
+        this.element.style['margin-left'] = "-250px";
+        // this.element.style.transform = "translate(-2500%, -50%)"; 
+        this.element.style['align-items'] = "flex-end";
+        this.element.style['vertical-align'] = "middle";
+        //this.element.style['background-color'] = "#5dbcd2"; 
+        //this.element.style.border = "1px solid #000000"; 
 
-            this.element.style['text-align'] = "center";
-            this.element.style.display = "none"; 
-            this.id = "scoreContainer";
+        this.element.style['text-align'] = "center";
+        this.element.style.display = "none";
+        this.id = "scoreContainer";
 
-            let time = document.createElement("DIV");
-            time.id = "time";
-            time.style['z-index'] = "3";
-            //time.style['background-color']="#5dbcd2"
-            time.style['text-align'] = "center";
-            time.style['vertical-align'] = "middle";
-            time.style['align-items'] = "center";
-            time.style.height = "100px";
-            time.style.width = "500px";
-            time.style['color'] = "#FFFFFF";
-            time.style['font-family'] = 'Arial Black';
-            time.style['font-size'] = "100px";
-            // time.style.width = "20";
-            // time.style.height = "20";
+        let time = document.createElement("DIV");
+        time.id = "time";
+        time.style['z-index'] = "3";
+        //time.style['background-color']="#5dbcd2"
+        time.style['text-align'] = "center";
+        time.style['vertical-align'] = "middle";
+        time.style['align-items'] = "center";
+        time.style.height = "100px";
+        time.style.width = "500px";
+        time.style['color'] = "#FFFFFF";
+        time.style['font-family'] = 'Arial Black';
+        time.style['font-size'] = "100px";
+        // time.style.width = "20";
+        // time.style.height = "20";
 
-            this.element.appendChild(time);
+        this.element.appendChild(time);
 
 
 
-            document.body.appendChild(this.element);
+        document.body.appendChild(this.element);
 
 
     }
@@ -287,10 +286,10 @@ class Timer {
         }
         setTimeout(countdown, 100)
     }
-      
+
 }
 
-        // adapted from coloring https://github.com/beckybarber18/coloring/blob/master/js/game.js   
+// adapted from coloring https://github.com/beckybarber18/coloring/blob/master/js/game.js   
 function countdown() {
     $('#counter').show();
     let seconds = time;
@@ -300,14 +299,14 @@ function countdown() {
         var counter = document.getElementById("time");
         seconds--;
         counter.innerHTML = (seconds < 10 ? "0" : "") + String(seconds);
-        if( seconds > 0 ) {
+        if (seconds > 0) {
             setTimeout(tick, 1000);
         } else {
             counter.style.display = "none";
             gameEnd = true;
         }
     }
-} 
+}
 var currTimer = new Timer(45);
 
 //-----------------------------------------------------------------------
@@ -316,27 +315,27 @@ var currTimer = new Timer(45);
 var geos = {};
 var mats = {};
 var types, sizes, positions, bucketGeometry;
-var geoBox = new THREE.BoxGeometry(1,1,1);
-var geoCyl = new THREE.CylinderGeometry( 0.5, 0.5, 1, 6, 1 );
+var geoBox = new THREE.BoxGeometry(1, 1, 1);
+var geoCyl = new THREE.CylinderGeometry(0.5, 0.5, 1, 6, 1);
 var materialType = 'MeshStandardMaterial';
 
 
 // geometrys
-geos['sphere'] = new THREE.BufferGeometry().fromGeometry( new THREE.SphereGeometry(1,16,10));
-geos['box'] = new THREE.BufferGeometry().fromGeometry( new THREE.BoxGeometry(1,1,1));
-geos['cylinder'] = new THREE.BufferGeometry().fromGeometry(new THREE.CylinderGeometry(1,1,1));
+geos['sphere'] = new THREE.BufferGeometry().fromGeometry(new THREE.SphereGeometry(1, 16, 10));
+geos['box'] = new THREE.BufferGeometry().fromGeometry(new THREE.BoxGeometry(1, 1, 1));
+geos['cylinder'] = new THREE.BufferGeometry().fromGeometry(new THREE.CylinderGeometry(1, 1, 1));
 bucketGeometry = new THREE.BufferGeometry();
 
 // materials
-mats['sph']    = new THREE[materialType]( {shininess: 10, map: basicTexture(0), name:'sph' } );
-mats['box']    = new THREE[materialType]( {shininess: 10, map: basicTexture(2), name:'box' } );
-mats['cyl']    = new THREE[materialType]( {shininess: 10, map: basicTexture(4), name:'cyl' } );
-mats['ssph']   = new THREE[materialType]( {shininess: 10, map: basicTexture(1), name:'ssph' } );
-mats['sbox']   = new THREE[materialType]( {shininess: 10, map: basicTexture(3), name:'sbox' } );
-mats['scyl']   = new THREE[materialType]( {shininess: 10, map: basicTexture(5), name:'scyl' } );
-mats['ground'] = new THREE[materialType]( {shininess: 100, color:0x3D4143, transparent:true, opacity:0.3 } );
-mats['beaker'] = new THREE[materialType]( {shininess: 1000, color: 0xC2C2C2, transparent:true, opacity:0.5} );
-mats['wall'] = new THREE[materialType]( {shininess: 10, color:0x0000c2, transparent:true, opacity:0.7 } );
+mats['sph'] = new THREE[materialType]({ shininess: 10, map: basicTexture(0), name: 'sph' });
+mats['box'] = new THREE[materialType]({ shininess: 10, map: basicTexture(2), name: 'box' });
+mats['cyl'] = new THREE[materialType]({ shininess: 10, map: basicTexture(4), name: 'cyl' });
+mats['ssph'] = new THREE[materialType]({ shininess: 10, map: basicTexture(1), name: 'ssph' });
+mats['sbox'] = new THREE[materialType]({ shininess: 10, map: basicTexture(3), name: 'sbox' });
+mats['scyl'] = new THREE[materialType]({ shininess: 10, map: basicTexture(5), name: 'scyl' });
+mats['ground'] = new THREE[materialType]({ shininess: 100, color: 0x3D4143, transparent: true, opacity: 0.3 });
+mats['beaker'] = new THREE[materialType]({ shininess: 1000, color: 0xC2C2C2, transparent: true, opacity: 0.5 });
+mats['wall'] = new THREE[materialType]({ shininess: 10, color: 0x0000c2, transparent: true, opacity: 0.7 });
 
 
 //oimo vars
@@ -346,15 +345,15 @@ var bodys = [];
 var loader = new OBJLoader();
 var loader_2 = new OBJLoader();
 loader_2.load(MASK, (obj) => {
-        let g = obj.children[0].geometry;
-        geos['mask'] = g;
+    let g = obj.children[0].geometry;
+    geos['mask'] = g;
 });
 // load a resource
 loader.load(
     // resource URL
     VIRUS,
     // called when resource is loaded
-    function ( object ) {
+    function (object) {
         let geo = object.children[0].geometry;
         geo.translate(0, -10.5, 0);
         geos['virus'] = geo;
@@ -362,15 +361,15 @@ loader.load(
 
     },
     // called when loading is in progresses
-    function ( xhr ) {
+    function (xhr) {
 
-        console.log( ( xhr.loaded / xhr.total * 100 ) + '% loaded' );
+        console.log((xhr.loaded / xhr.total * 100) + '% loaded');
 
     },
     // called when loading has errors
-    function ( error ) {
+    function (error) {
 
-        console.log( 'An error happened' );
+        console.log('An error happened');
 
     }
 );
@@ -391,10 +390,10 @@ const onAnimationFrameHandler = (timeStamp) => {
         handleCollisions();
         renderer.render(scene, camera);
         scene.update && scene.update(timeStamp);
-        currScore.updateScore(winning_points-losing_points);
-    }   
+        currScore.updateScore(winning_points - losing_points);
+    }
     else {
-        currScore.updateScore(winning_points-losing_points);
+        currScore.updateScore(winning_points - losing_points);
         canvas.style.display = "none";
 
     }
@@ -428,7 +427,7 @@ const keyDownHandler = (e) => {
         movingLeft = true;
     } else if (e.code == "KeyD") {
         movingRight = true;
-    } else if (e.keyCode == "32" && gameStarted==false) {
+    } else if (e.keyCode == "32" && gameStarted == false) {
         startGame();
     }
 }
@@ -448,11 +447,11 @@ window.addEventListener('resize', windowResizeHandler, false);
 window.addEventListener('keydown', keyDownHandler, false);
 window.addEventListener('keyup', keyUpHandler, false);
 
- //----------------------------------
- //  OIMO PHYSICS
- //----------------------------------
+//----------------------------------
+//  OIMO PHYSICS
+//----------------------------------
 // built off oimo example
-function initOimoPhysics(){
+function initOimoPhysics() {
 
     // world setting:( TimeStep, BroadPhaseType, Iterations )
     // BroadPhaseType can be 
@@ -460,13 +459,15 @@ function initOimoPhysics(){
     // 2 : Sweep and prune , the default 
     // 3 : dynamic bounding volume tree
     var group1 = 1 << 0;  // 00000000 00000000 00000000 00000001
-    world = new OIMO.World({    timestep: 1/120, 
-    iterations: 8, 
-    broadphase: 2, // 1 brute force, 2 sweep and prune, 3 volume tree
-    worldscale: 1, // scale full world 
-    random: true,  // randomize sample
-    info: false,   // calculate statistic or not
-    gravity: [0,-20,0] });
+    world = new OIMO.World({
+        timestep: 1 / 120,
+        iterations: 8,
+        broadphase: 2, // 1 brute force, 2 sweep and prune, 3 volume tree
+        worldscale: 1, // scale full world 
+        random: true,  // randomize sample
+        info: false,   // calculate statistic or not
+        gravity: [0, -20, 0]
+    });
     initbucketGeometry();
     let x, y, z, w, h, d;
 
@@ -485,20 +486,20 @@ function initOimoPhysics(){
     player_mesh.scale.set( w * 0.5, h, w * 0.5 ); */
 
     let player_body = world.add({
-    type:types,
-    size:sizes,
-    pos:[x,y,z],
-    posShape:positions,
-    move:true, 
-    world:world, 
-    name:'box1', 
-    config:[0.2, 0.4,0.1],
-    restitution:.01,
-    belongsTo:group1
+        type: types,
+        size: sizes,
+        pos: [x, y, z],
+        posShape: positions,
+        move: true,
+        world: world,
+        name: 'box1',
+        config: [0.2, 0.4, 0.1],
+        restitution: .01,
+        belongsTo: group1
     });
 
     //bodys[i] = b.body;
-    let player_mesh = new THREE.Mesh( bucketGeometry, mats['beaker' ] );
+    let player_mesh = new THREE.Mesh(bucketGeometry, mats['beaker']);
     //debugger;
     // meshs[i].castShadow = true;
     // meshs[i].receiveShadow = true;
@@ -509,38 +510,38 @@ function initOimoPhysics(){
     meshs[0] = player_mesh;
     bodys[0] = player_body;
     // 
-    scene.add( player_mesh );
+    scene.add(player_mesh);
     //setInterval(updateOimoPhysics, 1000/60);
 
 
     // SCENE PHYSICS DECLARATIONS 
-    var ground0 = world.add({size:[40, 40, 790], pos:[-380,0,0], rot:[0,0,-45], world:world});
-    var ground1 = world.add({size:[40, 40, 790], pos:[380,0,0], rot:[0,0,45], world:world});
-    var ground2 = world.add({size:[800, 80, 800], pos:[0,-40,0], world:world});
-    var wall2 = world.add({size:[80, 40, 790], pos:[-390,70,0], rot:[0,0,75], world:world});
-    var wall3 = world.add({size:[80, 40, 790], pos:[390,70,0], rot:[0,0,-75], world:world});
-    var wall4 = world.add({size:[790, 20, 40], pos:[0,0,390], rot:[0,0,0], world:world});
-    var wall5 = world.add({size:[790, 20, 40], pos:[0,0,-390], rot:[0,0,0], world:world});
+    var ground0 = world.add({ size: [40, 40, 790], pos: [-380, 0, 0], rot: [0, 0, -45], world: world });
+    var ground1 = world.add({ size: [40, 40, 790], pos: [380, 0, 0], rot: [0, 0, 45], world: world });
+    var ground2 = world.add({ size: [800, 80, 800], pos: [0, -40, 0], world: world });
+    var wall2 = world.add({ size: [80, 40, 790], pos: [-390, 70, 0], rot: [0, 0, 75], world: world });
+    var wall3 = world.add({ size: [80, 40, 790], pos: [390, 70, 0], rot: [0, 0, -75], world: world });
+    var wall4 = world.add({ size: [790, 20, 40], pos: [0, 0, 390], rot: [0, 0, 0], world: world });
+    var wall5 = world.add({ size: [790, 20, 40], pos: [0, 0, -390], rot: [0, 0, 0], world: world });
 
-    addWall([40, 40, 790], [-380,0,0], [0,0,-45]);
-    addWall([40, 40, 790], [380,0,0], [0,0,45]);
-    addWall([80, 40, 790], [-390,70,0], [0,0,75]);
-    addWall([80, 40, 790], [390,70,0], [0,0,-75]);
-    addWall([790, 20, 40], [0,0,390], [0,0,0]);
-    addWall([790, 20, 40], [0,0,-390], [0,0,0]);
-    addStaticBox([800, 80, 800], [0,-40,0], [0,0,0]);
+    addWall([40, 40, 790], [-380, 0, 0], [0, 0, -45]);
+    addWall([40, 40, 790], [380, 0, 0], [0, 0, 45]);
+    addWall([80, 40, 790], [-390, 70, 0], [0, 0, 75]);
+    addWall([80, 40, 790], [390, 70, 0], [0, 0, -75]);
+    addWall([790, 20, 40], [0, 0, 390], [0, 0, 0]);
+    addWall([790, 20, 40], [0, 0, -390], [0, 0, 0]);
+    addStaticBox([800, 80, 800], [0, -40, 0], [0, 0, 0]);
 
     // ground test 
-   /* {
-        const cubeSize = 4;
-        const cubeGeo = new THREE.BoxBufferGeometry(cubeSize, cubeSize, cubeSize);
-        const cubeMat = new THREE.MeshPhongMaterial({color: '#8AC'});
-        const mesh = new THREE.Mesh(cubeGeo, cubeMat);
-        mesh.castShadow = true;
-        mesh.receiveShadow = true;
-        mesh.position.set(cubeSize + 1, cubeSize / 2, 0);
-        scene.add(mesh);
-      }*/
+    /* {
+         const cubeSize = 4;
+         const cubeGeo = new THREE.BoxBufferGeometry(cubeSize, cubeSize, cubeSize);
+         const cubeMat = new THREE.MeshPhongMaterial({color: '#8AC'});
+         const mesh = new THREE.Mesh(cubeGeo, cubeMat);
+         mesh.castShadow = true;
+         mesh.receiveShadow = true;
+         mesh.position.set(cubeSize + 1, cubeSize / 2, 0);
+         scene.add(mesh);
+       }*/
     //populate(1)
 
 }
@@ -549,10 +550,10 @@ function initOimoPhysics(){
 function populate(n) {
     var type;
     var max = 250;
-    if(n===1) type = 1
-    else if(n===2) type = 2;
-    else if(n===3) type = 3;
-    else if(n===4) type = 4;
+    if (n === 1) type = 1
+    else if (n === 2) type = 2;
+    else if (n === 3) type = 3;
+    else if (n === 4) type = 4;
 
     var group1 = 1 << 0;  // 00000000 00000000 00000000 00000001
     var group2 = 1 << 1;  // 00000000 00000000 00000000 00000010
@@ -569,20 +570,20 @@ function populate(n) {
 
     let i = 0
 
-    while (i++ < max){
+    while (i++ < max) {
         var t;
-        if(type===4) t = Math.floor(Math.random()*3)+1;
+        if (type === 4) t = Math.floor(Math.random() * 3) + 1;
         else t = type;
-        x = -400 + Math.random()*800;
-        z = -400 + Math.random()*800;
-        y = 350 + Math.random()*5000;
+        x = -400 + Math.random() * 800;
+        z = -400 + Math.random() * 800;
+        y = 350 + Math.random() * 5000;
 
-        w = 10 + Math.random()*10;
-        h = 10 + Math.random()*10;
-        d = 10 + Math.random()*10;
+        w = 10 + Math.random() * 10;
+        h = 10 + Math.random() * 10;
+        d = 10 + Math.random() * 10;
 
-      
-        if(t===1){
+
+        if (t === 1) {
             var random = Math.random();
             let model_scale = 1;
             let col_group = group1;
@@ -604,41 +605,41 @@ function populate(n) {
                 col_group = group3;
             }
 
-            bodys[i] = world.add({type:'sphere', size:[w*0.5], pos:[x,y,z], move:true, world:world, restitution:0.5});
-            meshs[i] = new THREE.Mesh( geo, mat);
-            meshs[i].scale.set( w*0.5*model_scale, w*0.5*model_scale, w*0.5*model_scale );
+            bodys[i] = world.add({ type: 'sphere', size: [w * 0.5], pos: [x, y, z], move: true, world: world, restitution: 0.5 });
+            meshs[i] = new THREE.Mesh(geo, mat);
+            meshs[i].scale.set(w * 0.5 * model_scale, w * 0.5 * model_scale, w * 0.5 * model_scale);
             // let debug = new THREE.Mesh( geos.sphere, mats.box );
             // debug.scale.set( w * 0.5, w * 0.5, w * 0.5 );
             // debug.position.copy(bodys[i].position)
             // scene.add(debug);
-        } else if(t===2){
-            bodys[i] = world.add({type:'box', size:[w,h,d], pos:[x,y,z], move:true, world:world});
-            meshs[i] = new THREE.Mesh( geos.box, mats.box );
-            meshs[i].scale.set( w, h, d );
-        } else if(t===3){
-            bodys[i] = world.add({type:'cylinder', size:[w*0.5,h], pos:[x,y,z], move:true, world:world});
-            meshs[i] = new THREE.Mesh( geos.cylinder, mats.cyl );
-            meshs[i].scale.set( w*0.5, h, w*0.5 );
+        } else if (t === 2) {
+            bodys[i] = world.add({ type: 'box', size: [w, h, d], pos: [x, y, z], move: true, world: world });
+            meshs[i] = new THREE.Mesh(geos.box, mats.box);
+            meshs[i].scale.set(w, h, d);
+        } else if (t === 3) {
+            bodys[i] = world.add({ type: 'cylinder', size: [w * 0.5, h], pos: [x, y, z], move: true, world: world });
+            meshs[i] = new THREE.Mesh(geos.cylinder, mats.cyl);
+            meshs[i].scale.set(w * 0.5, h, w * 0.5);
         }
 
         meshs[i].castShadow = true;
         meshs[i].receiveShadow = true;
 
-        scene.add( meshs[i] );
+        scene.add(meshs[i]);
     }
 
 
     //add object
- 
+
 }
 
 // from oimo example
 function addStaticBox(size, position, rotation) {
-    var mesh = new THREE.Mesh( geos.box, mats.ground );
-    mesh.scale.set( size[0], size[1], size[2] );
-    mesh.position.set( position[0], position[1], position[2] );
-    mesh.rotation.set( rotation[0]*ToRad, rotation[1]*ToRad, rotation[2]*ToRad );
-    scene.add( mesh );
+    var mesh = new THREE.Mesh(geos.box, mats.ground);
+    mesh.scale.set(size[0], size[1], size[2]);
+    mesh.position.set(position[0], position[1], position[2]);
+    mesh.rotation.set(rotation[0] * ToRad, rotation[1] * ToRad, rotation[2] * ToRad);
+    scene.add(mesh);
     grounds.push(mesh);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
@@ -646,11 +647,11 @@ function addStaticBox(size, position, rotation) {
 
 // from oimo example
 function addWall(size, position, rotation) {
-    var mesh = new THREE.Mesh( geos.box, mats.wall);
-    mesh.scale.set( size[0], size[1], size[2] );
-    mesh.position.set( position[0], position[1], position[2] );
-    mesh.rotation.set( rotation[0]*ToRad, rotation[1]*ToRad, rotation[2]*ToRad );
-    scene.add( mesh );
+    var mesh = new THREE.Mesh(geos.box, mats.wall);
+    mesh.scale.set(size[0], size[1], size[2]);
+    mesh.position.set(position[0], position[1], position[2]);
+    mesh.rotation.set(rotation[0] * ToRad, rotation[1] * ToRad, rotation[2] * ToRad);
+    scene.add(mesh);
     grounds.push(mesh);
     mesh.castShadow = true;
     mesh.receiveShadow = true;
@@ -660,36 +661,36 @@ function addWall(size, position, rotation) {
 function initbucketGeometry() {
     let w = 50
     let h = 40
-    types = [ 'box', 'box', 'box', 'box', 'box'];
-    sizes = [ w+4,5,w,  4,h,w+4,  w+4,h,4,  4,h,w+4,  w+4,h,4];
-    positions = [ 0,0,0,  w/2,10,0,  0,10,w/2,   -1*(w/2),10,0,    0,10,-1*(w/2)];
+    types = ['box', 'box', 'box', 'box', 'box'];
+    sizes = [w + 4, 5, w, 4, h, w + 4, w + 4, h, 4, 4, h, w + 4, w + 4, h, 4];
+    positions = [0, 0, 0, w / 2, 10, 0, 0, 10, w / 2, -1 * (w / 2), 10, 0, 0, 10, -1 * (w / 2)];
 
     var g = new THREE.Geometry();
     var mesh, n, m;
-    for(var i=0; i<types.length; i++){
-        n = i*3;
-        m = new THREE.Matrix4().makeTranslation( positions[n+0], positions[n+1], positions[n+2] );
-        m.scale(new THREE.Vector3(sizes[n+0], sizes[n+1], sizes[n+2]));
-        g.merge(geoBox,m);
+    for (var i = 0; i < types.length; i++) {
+        n = i * 3;
+        m = new THREE.Matrix4().makeTranslation(positions[n + 0], positions[n + 1], positions[n + 2]);
+        m.scale(new THREE.Vector3(sizes[n + 0], sizes[n + 1], sizes[n + 2]));
+        g.merge(geoBox, m);
         g.computeBoundingBox();
     }
     bucketGeometry = new THREE.BufferGeometry();
-    bucketGeometry.fromGeometry( g );
+    bucketGeometry.fromGeometry(g);
 }
 
 // from oimo example
-function clearMesh(){
-    var i=meshs.length;
-    while (i--) scene.remove(meshs[ i ]);
+function clearMesh() {
+    var i = meshs.length;
+    while (i--) scene.remove(meshs[i]);
     i = grounds.length;
-    while (i--) scene.remove(grounds[ i ]);
+    while (i--) scene.remove(grounds[i]);
     grounds = [];
     meshs = [];
 }
 
 // based on oimo docs
 function updateOimoPhysics() {
-    if(world==null) return;
+    if (world == null) return;
 
     world.step();
 
@@ -699,14 +700,14 @@ function updateOimoPhysics() {
     if (player_mask) {
         let p_body = bodys[0].getPosition()
         player_mask_body.position.x = p_body.x - 2
-        player_mask_body.position.y = 50 
+        player_mask_body.position.y = 50
         player_mask_body.position.z = p_body.z + 55
     }
-    while (i--){
+    while (i--) {
         body = bodys[i];
         mesh = meshs[i];
 
-        if(!body.sleeping){
+        if (!body.sleeping) {
 
             mesh.position.copy(body.getPosition());
             mesh.quaternion.copy(body.getQuaternion());
@@ -717,11 +718,11 @@ function updateOimoPhysics() {
             //if(mesh.material.name === 'scyl') mesh.material = mats.cyl; 
 
             // reset position
-            if(mesh.position.y<-100){
-                x = -100 + Math.random()*200;
-                z = -100 + Math.random()*200;
-                y = 100 + Math.random()*1000;
-                body.resetPosition(x,y,z);
+            if (mesh.position.y < -100) {
+                x = -100 + Math.random() * 200;
+                z = -100 + Math.random() * 200;
+                y = 100 + Math.random() * 1000;
+                body.resetPosition(x, y, z);
             }
         } else {
             ///if(mesh.material.name === 'box') mesh.material = mats.sbox;
@@ -732,7 +733,7 @@ function updateOimoPhysics() {
 
 }
 
-function gravity(g){
+function gravity(g) {
     nG = document.getElementById("gravity").value
     world.gravity = new OIMO.Vec3(0, nG, 0);
 }
@@ -805,9 +806,9 @@ function handleCollisions() {
             let caught = sphereCaught(playerBody, playerMesh, body, mesh);
             if (caught) {
                 // console.log(bodys.length);
-                if(meshs[i].material === teal) giveMask();
-                if(meshs[i].material === green && !player_mask) losing_points++;
-                if(meshs[i].material === blue) winning_points++;
+                if (meshs[i].material === teal) giveMask();
+                if (meshs[i].material === green && !player_mask) losing_points++;
+                if (meshs[i].material === blue) winning_points++;
                 bodys.splice(i, 1);
                 scene.remove(meshs[i]);
                 mesh.geometry.dispose();
@@ -857,8 +858,8 @@ function sphereCaught(playerBody, playerMesh, body, mesh) {
     if (closestSpherePoint.x > minX && closestSpherePoint.x < maxX
         && closestSpherePoint.y > minY && closestSpherePoint.y < maxY
         && closestSpherePoint.z > minZ && closestSpherePoint.z < maxZ
-        && maxY - closestSpherePoint.y > 2*r
-        ) {
+        && maxY - closestSpherePoint.y > 2 * r
+    ) {
         inside = true;
     }
     return inside;
@@ -873,21 +874,21 @@ function giveMask() {
     player_mask = true;
     let w = 40
     let h = 40
-    player_mask_body = world.add({type:'cylinder', size:[w,h], rot:[-90, 0, 0], pos:[0,0,0], collidesWith:0, move:true, world:world});
+    player_mask_body = world.add({ type: 'cylinder', size: [w, h], rot: [-90, 0, 0], pos: [0, 0, 0], collidesWith: 0, move: true, world: world });
     bodys[bodys.length] = player_mask_body
     let i = meshs.length
-    meshs[i] = new THREE.Mesh( geos.mask, teal);
+    meshs[i] = new THREE.Mesh(geos.mask, teal);
     let model_scale = 1.5;
-    meshs[i].scale.set( w*0.5 * model_scale, h * model_scale, w*0.5 * model_scale );
-    scene.add( meshs[meshs.length - 1])
+    meshs[i].scale.set(w * 0.5 * model_scale, h * model_scale, w * 0.5 * model_scale);
+    scene.add(meshs[meshs.length - 1])
 }
 
 function boxCollisions() {
-    
+
 }
 
 function cylinderCollisions() {
-    
+
 }
 
 
@@ -900,27 +901,27 @@ function gradTexture(color) {
     var ct = c.getContext("2d");
     var size = 1024;
     c.width = 16; c.height = size;
-    var gradient = ct.createLinearGradient(0,0,0,size);
+    var gradient = ct.createLinearGradient(0, 0, 0, size);
     var i = color[0].length;
-    while(i--){ gradient.addColorStop(color[0][i],color[1][i]); }
+    while (i--) { gradient.addColorStop(color[0][i], color[1][i]); }
     ct.fillStyle = gradient;
-    ct.fillRect(0,0,16,size);
+    ct.fillRect(0, 0, 16, size);
     var texture = new THREE.Texture(c);
     texture.needsUpdate = true;
     return texture;
 }
 
-function basicTexture(n){
-    var canvas = document.createElement( 'canvas' );
+function basicTexture(n) {
+    var canvas = document.createElement('canvas');
     canvas.width = canvas.height = 64;
-    var ctx = canvas.getContext( '2d' );
+    var ctx = canvas.getContext('2d');
     var color;
-    if(n===0) color = "#3884AA";// sphere58AA80
-    if(n===1) color = "#61686B";// sphere sleep
-    if(n===2) color = "#AA6538";// box
-    if(n===3) color = "#61686B";// box sleep
-    if(n===4) color = "#AAAA38";// cyl
-    if(n===5) color = "#61686B";// cyl sleep
+    if (n === 0) color = "#3884AA";// sphere58AA80
+    if (n === 1) color = "#61686B";// sphere sleep
+    if (n === 2) color = "#AA6538";// box
+    if (n === 3) color = "#61686B";// box sleep
+    if (n === 4) color = "#AAAA38";// cyl
+    if (n === 5) color = "#61686B";// cyl sleep
     ctx.fillStyle = color;
     ctx.fillRect(0, 0, 64, 64);
     ctx.fillStyle = "rgba(0,0,0,0.2)";
@@ -940,7 +941,7 @@ function basicTexture(n){
 
 function updateScore() {
     // A line somewhere  else in the code base that has access to highScore
-    score.updateScore(winning_points-losing_points);
+    score.updateScore(winning_points - losing_points);
 }
 
 
@@ -955,22 +956,11 @@ function updateScore() {
 createOpeningScreen();
 
 function createOpeningScreen() {
-    // make html screen fit full screen
-    document.documentElement.style['height'] = "100%";
-    // Create background image and body CSS
-    document.body.style['font-family'] = "Lucida Console";
-    document.body.style['height'] = "100%";
-    document.body.style['background-image'] = "url(".concat(TUBES3.concat(")"));
-    document.body.style['background-size'] = "cover";
-    document.body.style['text-align'] = "center";
-    document.body.style.margin = "0px";
-
-
     // overarching container containing both start screen and canvas for the game
     let allContainer = document.createElement("DIV");
     allContainer.style.position = "relative";
 
-     // Set up renderer, canvas, and minor CSS adjustments
+    // Set up renderer, canvas, and minor CSS adjustments
     renderer.setPixelRatio(window.devicePixelRatio);
     canvas.style.display = 'block'; // Removes padding below canvas
     canvas.style.position = "relative"; // I ADDED THIS!
@@ -979,7 +969,6 @@ function createOpeningScreen() {
     allContainer.style.margin = 0; // Removes margin around page
     allContainer.style.overflow = 'hidden'; // Fix scrolling
     allContainer.id = "allContainer";
-    allContainer.style['height'] = "100%";
     // document.body.appendChild(canvas);
     allContainer.appendChild(canvas);
 
@@ -988,54 +977,104 @@ function createOpeningScreen() {
     let startScreenDiv = document.createElement("DIV");
     startScreenDiv.style.position = "relative";
     startScreenDiv.className = "titleScreen";
-    startScreenDiv.style.top = "5%";
-    startScreenDiv.style.display = "block";
-    // startScreenDiv.style.top = "25%";
+
+    let title = document.createElement("DIV");
+    title.innerText = "Catcher";
+    title.style['font-size'] = "96px";
+    title.style['font-family'] = "'Impact', 'Charcol', sans-serif";
+    title.style.width = "100%";
+    title.style['text-align'] = "center";
+    title.style['color'] = "#000000";
+    title.id = "title";
+    title.className = "titleScreen";
+    title.style.transform = "translate(0%, 50%)";
+    document.body.appendChild(title);
+
+    // document.write("Catch the blue particles to build toward a COVID-19 vaccine while avoiding the virus particles.")
+
+    var start = document.createElement("DIV");
+    start.innerHTML = "Catch the blue particles to build toward a COVID-19 vaccine while avoiding the virus particles. Collect the PPE Masks to protect yourself from the virus.";
+    start.style.display = 'block';
+    start.style['float'] = "center";
+    start.style['font-size'] = "xx-large";
+    start.style['font-weight'] = "bold";
+    start.style['font-family'] = "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif";
+    start.style['position'] = "absolute";
+    start.style['border-radius'] = "8px";
+    start.style['border-color'] = "black";
+    start.style['left'] = "50%";
+    start.style['width'] = "600px";
+    start.style['margin-left'] = "-290px";
+    start.style['margin-top'] = "150px";
+    start.style['height'] = "150px";
+    start.style['opacity'] = "0.5";
+    start.style['z-index'] = "1";
+    document.body.appendChild(start);
+
+    var start1 = document.createElement("DIV");
+    start1.innerHTML = "Press the space bar to start";
+    start1.style.display = 'block';
+    start1.style['float'] = "center";
+    start1.style['font-size'] = "xx-large";
+    start1.style['font-weight'] = "bold";
+    start1.style['font-family'] = "'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif";
+    start1.style['position'] = "absolute";
+    start1.style['border-radius'] = "8px";
+    start1.style['border-color'] = "black";
+    start1.style['left'] = "50%";
+    start1.style['width'] = "500px";
+    start1.style['margin-left'] = "-240px";
+    start1.style['margin-top'] = "400px";
+    start1.style['height'] = "150px";
+    start1.style['opacity'] = "0.5";
+    start1.style['z-index'] = "1";
+    document.body.appendChild(start1);
+
+    var virus = document.createElement("img");
+    virus.src = VIRUS_IMG;
+    virus.style['width'] = "300px";
+    virus.style['height'] = "auto";
+    virus.style['opacity'] = "0.5";
+    virus.style['margin-left'] = "-940px";
+    virus.style['margin-top'] = "-100px";
+    document.body.appendChild(virus);
 
 
-        let title = document.createElement("DIV");
-        title.innerText = "Catcher";
-        title.style['font-size'] = "96px"; 
-        title.style.width = "100%"; 
-        title.style['text-align'] = "center";
-        title.style['color'] = "#000000";
-        title.style['padding'] = "10px";
-        title.id = "title";
-
-        title.className = "titleScreen";
+    // var mask = document.createElement("img");
+    // mask.src = MASK_IMG;
+    // mask.style['width'] = "300px";
+    // mask.style['height'] = "auto";
+    // mask.style['opacity'] = "0.5";
+    // mask.style['margin-left'] = "-100px";
+    // mask.style['margin-top'] = "140px";
+    // document.body.appendChild(mask);
 
 
-        // element.style.transform = "translate(0%, -50%)"; 
-        startScreenDiv.appendChild(title);
+    // // instruction container and instructions
+    // let instructionContainer = document.createElement("DIV");
+    // instructionContainer.style['border-radius'] = "20px";
+    // instructionContainer.style['display'] = "inline-block";
+    // instructionContainer.style['flex-wrap'] = "wrap";
+    // instructionContainer.style['background-color'] = "ffffff";
+    // instructionContainer.style['text-align'] = "center";
+    // instructionContainer.style['padding'] = "30px";
+    // instructionContainer.style['background-color'] = "#9EC1A3";
+    // instructionContainer.className = "titleScreen";
+    // startScreenDiv.appendChild(instructionContainer);
 
-        // instruction container and instructions
-        let instructionContainer = document.createElement("DIV");
-        instructionContainer.style['border-radius'] = "20px";
-        instructionContainer.style['display'] = "inline-block";
-        instructionContainer.style['flex-wrap'] = "wrap";
-        instructionContainer.style['background-color'] = "ffffff";
-        instructionContainer.style['text-align'] = "center";
-        instructionContainer.style['padding'] = "30px";
-        instructionContainer.style['background-color'] = "#9EC1A3";
-        instructionContainer.className = "titleScreen";
-        // instructionContainer.style.height = "100%";
-        instructionContainer.style.top = "50%";
-
-        startScreenDiv.appendChild(instructionContainer);
-
-            let instructions = document.createElement("DIV");
-            instructions.innerHTML = "Catch the PPE equipment and vaccine materials while avoiding the virus particles!</br></br>Press the space bar to start the game!";
-            instructions.style['font-size'] = "20px"; 
-            instructions.style.width = "100%"; 
-            instructions.style['text-align'] = "center";
-            instructions.style['color'] = "#8075FF";
-            instructions.id = "instructions";
-            instructions.className = "titleScreen";
-            // element.style.transform = "translate(0%, -50%)"; 
-            instructionContainer.appendChild(instructions);
+    // let instructions = document.createElement("DIV");
+    // instructions.innerHTML = "Catch the PPE equipment and vaccine materials while avoiding the virus particles!</br>Press the space bar to start the game!";
+    // instructions.style['font-size'] = "20px";
+    // instructions.style.width = "100%";
+    // instructions.style['text-align'] = "center";
+    // instructions.style['color'] = "#8075FF";
+    // instructions.id = "instructions";
+    // instructions.className = "titleScreen";
+    // // element.style.transform = "translate(0%, -50%)"; 
+    // instructionContainer.appendChild(instructions);
 
     allContainer.appendChild(startScreenDiv);
-         
+
 
     // place parameter bar in proper position
     //let params = document.getElementsByClassName("dg ac");
@@ -1044,23 +1083,29 @@ function createOpeningScreen() {
     //allContainer.appendChild(param);
     //param.style['z-index'] = "2";
 
+
+
+
+
     document.body.appendChild(allContainer);
     allContainer.position = "absolute";
     canvas.position = "absolute";
 
 
-   
-
+    // Create background image and body CSS
+    document.body.style['font-family'] = "Lucida Console";
+    document.body.style['height'] = "100%";
+    document.body.style['background-color'] = "#111111";
+    document.body.style['background-image'] = "url(".concat(BACK.concat(")"));
+    document.body.style['background-size'] = "cover";
+    document.body.style['text-align'] = "center";
+    document.body.style.margin = "0px";
 
     let s = new Score(0);
     currScore = s;
 
-        
+
 
 
 }
-
-
-
-
 
