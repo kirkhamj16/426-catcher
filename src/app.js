@@ -11,6 +11,11 @@ import { OrbitControls } from 'three/examples/jsm/controls/OrbitControls.js';
 import { SeedScene, Cam } from 'scenes';
 import { OBJLoader } from 'three/examples/jsm/loaders/OBJLoader.js';
 import VIRUS from '../models/virus/virus.obj';
+import TUBES3 from '../images/tubes3.jpg';
+import TUBES1 from '../images/tubes1.png';
+import TUBES2 from '../images/tubes2.png';
+import TUBES4 from '../images/tubes4.png';
+import TUBES5 from '../images/tubes5.png';
 // import Score from "/../src/Score.js"
 
 const OIMO = require('oimo');
@@ -389,7 +394,7 @@ function initOimoPhysics(){
 
     //bodys[i] = b.body;
     let player_mesh = new THREE.Mesh( bucketGeometry, mats['beaker' ] );
-    debugger;
+    //debugger;
     // meshs[i].castShadow = true;
     // meshs[i].receiveShadow = true;
 
@@ -871,7 +876,7 @@ function createOpeningScreen() {
     // Create background image and body CSS
     document.body.style['font-family'] = "Lucida Console";
     document.body.style['height'] = "100%";
-    document.body.style['background-image'] = "url('../images/tubes3.jpg')";
+    document.body.style['background-image'] = "url(".concat(TUBES3.concat(")"));
     document.body.style['background-size'] = "cover";
     document.body.style['text-align'] = "center";
     document.body.style.margin = "0px";

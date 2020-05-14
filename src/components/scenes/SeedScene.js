@@ -2,6 +2,12 @@ import * as Dat from 'dat.gui';
 import { Scene, Color, CubeTextureLoader, LatheBufferGeometry } from 'three';
 import { Flower, Land } from 'objects';
 import { BasicLights } from 'lights';
+import RIGHT from '../../../src/textures/right.png';
+import LEFT from '../../../src/textures/left.png';
+import TOP from '../../../src/textures/top.png';
+import BOT from '../../../src/textures/bottom.png';
+import FRONT from '../../../src/textures/front.png';
+import BACK from '../../../src/textures/back.png';
 
 
 class SeedScene extends Scene {
@@ -20,12 +26,12 @@ class SeedScene extends Scene {
         var loader = new CubeTextureLoader();
 
         const texture = loader.load([
-            './src/textures/right.png',
-            './src/textures/left.png',
-            './src/textures/top.png',
-            './src/textures/bottom.png',
-            './src/textures/front.png',
-            './src/textures/back.png',
+            RIGHT,
+            LEFT,
+            TOP,
+            BOT,
+            FRONT,
+            BACK,
         ]);
 
         // Set background to a nice color
