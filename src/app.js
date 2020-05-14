@@ -122,15 +122,16 @@ function startGame() {
 class Score {
     constructor(initialscore) {
             this.element = document.createElement("DIV");
-            this.element.style.width = "16px"; 
-            this.element.style.height = "20px"; 
+            this.element.style.width = "500px"; 
+            this.element.style.height = "80px"; 
             this.element.style.position = "absolute"; 
-            this.element.style.top = "50%"; 
-            this.element.style.left = "50%"; 
-            this.element.style.transform = "translate(-2500%, -50%)"; 
+            this.element.style.top = "5%"; 
+            this.element.style.left = "5%"; 
+            //this.element.style.transform = "translate(-2500%, -50%)"; 
             this.element.style['align-items'] = "flex-end"; 
-            // this.element.style['background-color'] = "#5dbcd2"; 
-            this.element.style.border = "1px solid #ffffff"; 
+            this.element.style['vertical-align'] = "middle";
+            //this.element.style['background-color'] = "#5dbcd2"; 
+            //this.element.style.border = "1px solid #000000"; 
 
             this.element.style['text-align'] = "center";
             this.element.style.display = "none"; 
@@ -139,12 +140,15 @@ class Score {
             let score = document.createElement("DIV");
             score.id = "score";
             score.style['z-index'] = "3";
-            score.style['background-color']="#5dbcd2"
-            score.style.height = "20px";
-            score.style.width = "16px";
-            score.style.width = "16px";
+            //score.style['background-color']="#5dbcd2"
+            score.style['text-align'] = "center";
+            score.style['vertical-align'] = "middle";
+            score.style['align-items'] = "center";
+            score.style.height = "80px";
+            score.style.width = "500px";
             score.style['color'] = "#000000";
-            score.innerText="10";
+            score.style['font-family'] = 'Arial Black';
+            score.style['font-size'] = "60px";
             // score.style.width = "20";
             // score.style.height = "20";
 
@@ -158,18 +162,18 @@ class Score {
     }
     showScore() {
         this.element.style.display = "block";
-        this.element.style['z-index'] = "2"
+        this.element.style['z-index'] = "6"
 
         // for some reason need to access element's children have changes be reflected
         let children = this.element.children;
         for (let child of children) {
             if (child.id == "score") {
-                child.innerText = "0";
+                child.innerText = "5";
             }
         }
 
         let beaker = document.createElement("DIV");
-        beaker.style.width = "16px"; 
+        beaker.style.width = "300px"; 
         // beaker.style.height = "150px"; 
         beaker.style.position = "absolute"; 
         beaker.style.top = "50%"; 
@@ -181,7 +185,7 @@ class Score {
 
         beaker.style['text-align'] = "center";
         beaker.style.display = "none"; 
-        beaker.style['z-index'] = "2";
+        beaker.style['z-index'] = "4";
         beaker.style.height="100%"
         beaker.classList.add("beaker");
         let glass = document.createElement("DIV");
@@ -192,7 +196,7 @@ class Score {
         let water = document.createElement("DIV");
         water.style.height="100%"
         water.classList.add("water");
-        water.style['z-index'] = "4";
+        water.style['z-index'] = "2";
         glass.appendChild(water);
 
         this.element.appendChild(beaker);
@@ -203,7 +207,7 @@ class Score {
         let children = this.element.children;
         for (let child of children) {
             if (child.id == "score") {
-                child.innerText = newScore;
+                child.innerText = "SCORE: ".concat(newScore);
             }
         }
         // this.element.innerText = newScore;
