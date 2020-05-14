@@ -16,6 +16,7 @@ import TUBES1 from '../images/tubes1.png';
 import TUBES2 from '../images/tubes2.png';
 import TUBES4 from '../images/tubes4.png';
 import TUBES5 from '../images/tubes5.png';
+import MASK from '../models/mask/mask.obj';
 // import Score from "/../src/Score.js"
 
 const OIMO = require('oimo');
@@ -48,6 +49,8 @@ var infos;
 // temp color fixes
 var blue = new THREE.MeshLambertMaterial({color: 0x0000FF});
 blue.color = new THREE.Color(0x0000FF);
+var teal = new THREE.MeshLambertMaterial({color: 0x00c4c4});
+teal.color = new THREE.Color(0x00c4c4);
 var green = new THREE.MeshLambertMaterial({color: 0x7bc059});
 green.color = new THREE.Color(0x7bc059);
 
@@ -248,7 +251,11 @@ var world = null;
 var bodys = [];
 
 var loader = new OBJLoader();
-
+var loader_2 = new OBJLoader();
+loader_2.load(MASK, (obj) => {
+        let g = obj.children[0].geometry;
+        geos['mask'] = g;
+});
 // load a resource
 loader.load(
     // resource URL
@@ -310,6 +317,10 @@ const windowResizeHandler = () => {
     camera.updateProjectionMatrix();
 };
 
+var player_mask = false;
+var player_mask_mesh = null;
+var player_mask_body = null;
+
 // ADD THIS TO PLAYER CLASS WHEN IMPLEMENTED
 var movingUp = false;
 var movingLeft = false;
@@ -355,7 +366,7 @@ function initOimoPhysics(){
     // 1 : BruteForce
     // 2 : Sweep and prune , the default 
     // 3 : dynamic bounding volume tree
-
+    var group1 = 1 << 0;  // 00000000 00000000 00000000 00000001
     world = new OIMO.World({    timestep: 1/120, 
     iterations: 8, 
     broadphase: 2, // 1 brute force, 2 sweep and prune, 3 volume tree
@@ -390,6 +401,7 @@ function initOimoPhysics(){
     name:'box1', 
     config:[0.2, 0.4,0.1],
     restitution:.01,
+    belongsTo:group1
     });
 
     //bodys[i] = b.body;
@@ -445,6 +457,10 @@ function populate(n) {
     else if(n===3) type = 3;
     else if(n===4) type = 4;
 
+    var group1 = 1 << 0;  // 00000000 00000000 00000000 00000001
+    var group2 = 1 << 1;  // 00000000 00000000 00000000 00000010
+    var group3 = 1 << 2;  // 00000000 00000000 00000000 00000100
+
     // reset old
     //clearMesh();
     //world.clear();
@@ -472,14 +488,23 @@ function populate(n) {
         if(t===1){
             var random = Math.random();
             let model_scale = 1;
+            let col_group = group1;
+            //debugger;
             if (random < 0.1) {
                 var mat = blue;
                 var geo = geos.sphere
+                col_group = group1;
+            } else if (random > 0.95) {
+                var mat = teal;
+                var geo = geos.mask;
+                w = w;
+                col_group = group2;
             }
             else {
                 var mat = green;
                 var geo = geos.virus
                 model_scale = .09
+                col_group = group3;
             }
 
             bodys[i] = world.add({type:'sphere', size:[w*0.5], pos:[x,y,z], move:true, world:world, restitution:0.5});
@@ -569,7 +594,12 @@ function updateOimoPhysics() {
     var x, y, z, mesh, body, i = bodys.length;
 
     updatePlayerPos();
-
+    if (player_mask) {
+        let p_body = bodys[0].getPosition()
+        player_mask_body.position.x = p_body.x - 2
+        player_mask_body.position.y = 50 
+        player_mask_body.position.z = p_body.z + 55
+    }
     while (i--){
         body = bodys[i];
         mesh = meshs[i];
@@ -673,8 +703,9 @@ function handleCollisions() {
             let caught = sphereCaught(playerBody, playerMesh, body, mesh);
             if (caught) {
                 // console.log(bodys.length);
-                if(meshs[i].material === green) losing_points++;
-                else winning_points++;
+                if(meshs[i].material === teal) giveMask();
+                if(meshs[i].material === green && !player_mask) losing_points++;
+                if(meshs[i].material === blue) winning_points++;
                 bodys.splice(i, 1);
                 scene.remove(meshs[i]);
                 mesh.geometry.dispose();
@@ -730,6 +761,23 @@ function sphereCaught(playerBody, playerMesh, body, mesh) {
     }
     return inside;
 
+}
+
+function giveMask() {
+    var group3 = 1 << 2;  // 00000000 00000000 00000000 00000100
+    if (player_mask) {
+        return
+    }
+    player_mask = true;
+    let w = 40
+    let h = 40
+    player_mask_body = world.add({type:'cylinder', size:[w,h], rot:[-90, 0, 0], pos:[0,0,0], collidesWith:0, move:true, world:world});
+    bodys[bodys.length] = player_mask_body
+    let i = meshs.length
+    meshs[i] = new THREE.Mesh( geos.mask, teal);
+    let model_scale = 1.5;
+    meshs[i].scale.set( w*0.5 * model_scale, h * model_scale, w*0.5 * model_scale );
+    scene.add( meshs[meshs.length - 1])
 }
 
 function boxCollisions() {
