@@ -30,6 +30,10 @@ module.exports = {
                 exclude: path.resolve(__dirname, './node_modules/'),
             },
             {
+                test: /\.css$/i,
+                use: ['style-loader', 'css-loader'],
+            },
+            {
                 type: 'javascript/auto',
                 test: /\.(json)/,
                 exclude: path.resolve(__dirname, './node_modules/'),

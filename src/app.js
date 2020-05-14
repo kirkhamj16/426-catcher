@@ -16,6 +16,7 @@ import BACK from '../src/textures/back.png';
 import MASK from '../models/mask/mask.obj';
 import VIRUS_IMG from '../virus.png';
 import MASK_IMG from '../mask.png';
+import "../src/style.css";
 // import Score from "/../src/Score.js"
 
 const OIMO = require('oimo');
@@ -81,11 +82,11 @@ function injectScriptAndUse() {
 }
 
 // add CSS
-injectCSS();
+//injectCSS();
 function injectCSS() {
     var head = document.getElementsByTagName("head")[0];
     var link = document.createElement("link");
-    link.href = "/src/style.css";
+    link.href = CSS;
     link.type = "text/css";
     link.rel = "stylesheet";
     head.appendChild(link);
@@ -531,7 +532,7 @@ function initOimoPhysics() {
 // adapted from oimo example
 function populate(n) {
     var type;
-    var max = 250;
+    var max = 500;
     if (n === 1) type = 1
     else if (n === 2) type = 2;
     else if (n === 3) type = 3;
