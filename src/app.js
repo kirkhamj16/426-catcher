@@ -218,7 +218,7 @@ var winning_points = 0;
 var losing_points = 0;
 
 //-----------------------------------------------------------------------
-// DEFINITION OF OMIOS PRIMITIVES
+// DEFINITION OF OMIOS PRIMITIVES -- built off oimo docs
 //-----------------------------------------------------------------------
 var geos = {};
 var mats = {};
@@ -358,7 +358,7 @@ window.addEventListener('keyup', keyUpHandler, false);
  //----------------------------------
  //  OIMO PHYSICS
  //----------------------------------
-
+// built off oimo example
 function initOimoPhysics(){
 
     // world setting:( TimeStep, BroadPhaseType, Iterations )
@@ -448,7 +448,7 @@ function initOimoPhysics(){
 
 }
 
-
+// adapted from oimo example
 function populate(n) {
     var type;
     var max = 250;
@@ -535,6 +535,7 @@ function populate(n) {
  
 }
 
+// from oimo example
 function addStaticBox(size, position, rotation) {
     var mesh = new THREE.Mesh( geos.box, mats.ground );
     mesh.scale.set( size[0], size[1], size[2] );
@@ -546,6 +547,7 @@ function addStaticBox(size, position, rotation) {
     mesh.receiveShadow = true;
 }
 
+// from oimo example
 function addWall(size, position, rotation) {
     var mesh = new THREE.Mesh( geos.box, mats.wall);
     mesh.scale.set( size[0], size[1], size[2] );
@@ -557,6 +559,7 @@ function addWall(size, position, rotation) {
     mesh.receiveShadow = true;
 }
 
+// adapted from oimo chair
 function initbucketGeometry() {
     let w = 50
     let h = 40
@@ -577,6 +580,7 @@ function initbucketGeometry() {
     bucketGeometry.fromGeometry( g );
 }
 
+// from oimo example
 function clearMesh(){
     var i=meshs.length;
     while (i--) scene.remove(meshs[ i ]);
@@ -586,6 +590,7 @@ function clearMesh(){
     meshs = [];
 }
 
+// based on oimo docs
 function updateOimoPhysics() {
     if(world==null) return;
 
