@@ -446,7 +446,7 @@ function initOimoPhysics() {
         worldscale: 1, // scale full world 
         random: true,  // randomize sample
         info: false,   // calculate statistic or not
-        gravity: [0, -20, 0]
+        gravity: [0, -50, 0]
     });
     initbucketGeometry();
     let x, y, z, w, h, d;
@@ -556,7 +556,7 @@ function populate(n) {
         else t = type;
         x = -400 + Math.random() * 800;
         z = -400 + Math.random() * 800;
-        y = 350 + Math.random() * 5000;
+        y = 250 + Math.random() * 2700;
 
         w = 10 + Math.random() * 10;
         h = 10 + Math.random() * 10;
@@ -567,25 +567,31 @@ function populate(n) {
             var random = Math.random();
             let model_scale = 1;
             let col_group = group1;
+            var velocity_scale;
             //debugger;
-            if (random < 0.1) {
+            if (random < 0.2) {
                 var mat = blue;
                 var geo = geos.sphere
                 col_group = group1;
+                velocity_scale = 2.5;
             } else if (random > 0.95) {
                 var mat = teal;
                 var geo = geos.mask;
                 w = w;
                 col_group = group2;
+                velocity_scale = 6;
             }
             else {
                 var mat = green;
                 var geo = geos.virus
                 model_scale = .09
                 col_group = group3;
+                velocity_scale = 1;
             }
 
             bodys[i] = world.add({ type: 'sphere', size: [w * 0.5], pos: [x, y, z], move: true, world: world, restitution: 0.5 });
+            bodys[i].linearVelocity.add(new OIMO.Vec3(0, -velocity_scale *10, 0));
+            //bodys[i].linearVelocity.multiplyScalar(velocity_scale *20);
             meshs[i] = new THREE.Mesh(geo, mat);
             meshs[i].scale.set(w * 0.5 * model_scale, w * 0.5 * model_scale, w * 0.5 * model_scale);
             // let debug = new THREE.Mesh( geos.sphere, mats.box );
@@ -721,7 +727,7 @@ function gravity(g) {
 function updatePlayerPos() {
     let player_mesh = meshs[0];
     let player_body = bodys[0];
-    let speed_scale = 1;
+    let speed_scale = 4;
     if (movingUp) {
         player_body.linearVelocity.add(new OIMO.Vec3(0, 0, -1 * speed_scale))
     }

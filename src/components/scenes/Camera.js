@@ -6,12 +6,12 @@ class Cam extends PerspectiveCamera {
     constructor() {
         // Call parent Scene() constructor
         super( 60, window.innerWidth / window.innerHeight, 1, 5000 );
-		this.position.set(0,250,200); // Set position like this
+		this.position.set(0,400,250); // Set position like this
 		this.lookAt(new Vector3(0,0,0)); // Set look at coordinate like this
 	}
 	update(playerPos) {
         this.position.x = playerPos.x;
-        this.position.z = playerPos.z + 200
+        this.position.z = playerPos.z + 280;
         this.lookAt(playerPos)
     }
 }
